@@ -1,0 +1,120 @@
+<p-tabView styleClass="tabview-custom">
+    <p-tabPanel>
+        <ng-template pTemplate="header">
+            <i class="bi bi-list-task"></i>
+            <span> Atractii turistice</span>
+        </ng-template>
+        <div class="row">
+            <div style = "overflow: hidden;">
+                <button class="add-button" type="button" (click)="addAtractie()">Adauga atractie turistica</button>
+            </div>
+            <div class="col-2" *ngFor="let atractie of atractiiTuristice">
+                <app-atractie-turistica [atractie]="atractie"></app-atractie-turistica>
+            </div>
+        </div>
+        <div class="d-flex justify-content-center" *ngIf="pagination">
+            <pagination 
+                [boundaryLinks]="true" 
+                [totalItems]="pagination.totalItems"
+                [itemsPerPage]="pagination.itemsPerPage"
+                [maxSize]="10"
+                [(ngModel)]="pagination.currentPage"
+                (pageChanged)="pageChanged($event)"
+                previousText="&lsaquo;" 
+                nextText="&rsaquo;" 
+                firstText="&laquo;" 
+                lastText="&raquo;">
+            </pagination>
+        </div>
+    </p-tabPanel>
+    <p-tabPanel>
+        <ng-template pTemplate="header">
+            <i class="bi bi-houses-fill"></i>
+            <span>Hoteluri</span>
+        </ng-template>
+        <div class="row">
+            <div style = "overflow: hidden;">
+                <button class="add-button" type="button" (click)="addHotel()">Adauga hotel</button>
+            </div>
+            <div class="col-2" *ngFor="let hotel of hoteluri">
+                <app-hotel [hotel]="hotel"></app-hotel>
+            </div>
+        </div>
+        <div class="d-flex justify-content-center" *ngIf="pagination">
+            <pagination 
+                [boundaryLinks]="true" 
+                [totalItems]="pagination.totalItems"
+                [itemsPerPage]="pagination.itemsPerPage"
+                [maxSize]="10"
+                [(ngModel)]="pagination.currentPage"
+                (pageChanged)="pageChanged($event)"
+                previousText="&lsaquo;" 
+                nextText="&rsaquo;" 
+                firstText="&laquo;" 
+                lastText="&raquo;">
+            </pagination>
+        </div>
+    </p-tabPanel>
+    <p-tabPanel header="Rute">
+        <ng-template pTemplate="header">
+            <i class="bi bi-geo-alt-fill"></i>
+            <span>Rute</span>
+        </ng-template>
+        <div class="row">
+            <div class="map-container">
+                <agm-map [latitude]="48.85637149999999" [longitude]="2.3532147" [zoom]="4">
+                    <agm-marker [latitude]="48.85637149999999" [longitude]="2.3532147"></agm-marker>
+                    <agm-marker [latitude]="44.4265892" [longitude]="26.1027819"></agm-marker>
+                    <agm-direction [origin]="origin" [destination]="destination"></agm-direction>
+                </agm-map>
+            </div> 
+        </div>
+    </p-tabPanel>
+</p-tabView>
+
+<p-dialog header="Adauga hotel" [(visible)]="displayForAddingNewHotel" [style]="{width: '50vw'}">
+    <div class="form-container">
+        <form *ngIf="displayForAddingNewHotel" (ngSubmit)="submitHotel()">
+            <div class="form-group">
+                <label for="nume">Nume</label>
+                <input type="text" id="nume" name="nume" [(ngModel)]="newHotel.nume" required>
+            </div>
+    
+            <div class="form-group">
+                <label for="adresa">Adresa</label>
+                <textarea id="adresa" name="adrsea" [(ngModel)]="newHotel.adresa"></textarea>
+            </div>
+            
+            
+            <div class="form-group">
+                <label for="pret">Pret pe noapte</label>
+                <input type="number" id="pret" name="pret" [(ngModel)]="newHotel.pricePerNight">
+            </div>
+            <button type="submit" class="btn btn-primary">Adauga hotel</button>
+          </form>
+    </div>
+</p-dialog>
+
+<p-dialog header="Adauga atractie turistica" [(visible)]="displayForAddingNewAttraction" [style]="{width: '50vw'}">
+    <div class="form-container">
+        <form *ngIf="displayForAddingNewAttraction" (ngSubmit)="submitAtractieTuristica()">
+            <div class="form-group">
+                <label for="nume">Nume</label>
+                <input type="text" id="nume" name="nume" [(ngModel)]="newAtractie.nume" required>
+            </div>
+    
+            <div class="form-group">
+                <label for="descriere">Descriere</label>
+                <textarea id="descriere" name="descriere" [(ngModel)]="newAtractie.descriere"></textarea>
+            </div>
+            
+            
+            <div class="form-group">
+                <label for="adresa">Adresa</label>
+                <textarea id="adresa" name="adresa" [(ngModel)]="newAtractie.adresa"></textarea>
+            </div>
+    
+            <button type="submit" class="btn btn-primary">Adauga atractie</button>
+          </form>
+    </div>
+</p-dialog>

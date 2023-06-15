@@ -1,0 +1,38 @@
+<form [formGroup]="registerForm" (ngSubmit)="registerForm.valid && register()" autocomplete="off">
+    <h2 class="text-center text-primary">Inregistrare</h2>
+    <hr>
+
+    <app-text-input [formControl]="$any(registerForm.controls['username'])" 
+        [label]="'Nume utilizator'"></app-text-input>
+    <app-text-input [formControl]="$any(registerForm.controls['firstName'])" 
+        [label]="'Prenume'"></app-text-input>
+    <app-text-input [formControl]="$any(registerForm.controls['lastName'])" 
+        [label]="'Nume'"></app-text-input>
+    <app-text-input [formControl]="$any(registerForm.controls['email'])" 
+        [label]="'Email'"></app-text-input>
+    <app-date-picker [formControl]="$any(registerForm.controls['dateOfBirth'])" 
+        [label]="'Data nasterii'" [maxDate]="maxDate"></app-date-picker >
+    <app-text-input [formControl]="$any(registerForm.controls['city'])" 
+        [label]="'Orasul curent'"></app-text-input>
+    <app-text-input [formControl]="$any(registerForm.controls['country'])" 
+        [label]="'Tara curenta'"></app-text-input>
+    <app-text-input [formControl]="$any(registerForm.controls['password'])" 
+        [label]="'Parola'" [type]="'password'">
+    </app-text-input>
+    <app-text-input [formControl]="$any(registerForm.controls['confirmPassword'])" 
+        [label]="'Confirmati Parola'"
+        [type]="'password'"></app-text-input>
+
+    <div class="row" *ngIf="validationErrors">
+        <ul class="text-danger">
+            <li *ngFor="let error of validationErrors">
+                {{error}}
+            </li>
+        </ul>
+    </div>
+
+    <div class="text-center">
+        <button [disabled]="!registerForm.valid" class="btn btn-success me-2" style="background-color: crimson;" type="submit">Inregistare</button>
+        <button class="btn btn-default" type="button" (click)="cancel()">Anulare</button>
+    </div>
+</form>

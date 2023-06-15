@@ -1,0 +1,33 @@
+<div class="row" *ngIf="atractieTuristica.id">
+    <div class="col-4">
+        <div class="card">
+            <h4 style="margin-bottom: -20px;text-align: center;margin-top: 20px;">{{atractieTuristica.nume}}</h4>
+            <img src="{{atractieTuristica.photoUrl || './assets/user.png'}}" alt="{{atractieTuristica.nume}}"
+                class="card-img-top img-thumbnail">
+            <div class="card-body">
+                <div>
+                    <strong>Locatie:</strong>
+                    <p>{{atractieTuristica.adresa}}</p>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="col-8">
+        <tabset class="atractieTuristicaTabs-tabset" #atractieTuristicaTabs>
+            <tab heading="Despre {{atractieTuristica.nume}}" (selectTab)="onTabActivated($event)">
+                <h4>Descriere</h4>
+                <p>{{atractieTuristica.descriere}}</p>
+                <h4>Adresa</h4>
+                <p>{{atractieTuristica.adresa}}</p>
+            </tab>
+            <tab heading="Imagini" (selectTab)="onTabActivated($event)">
+                <ngx-gallery [options]="galleryOptions" [images]="galleryImages" class="ngx-gallery"></ngx-gallery>
+            </tab>
+            <tab heading="Editeaza Imagini">
+                <app-photo-editor [object]="atractieTuristicaTabs"></app-photo-editor>
+            </tab>
+        </tabset>
+    </div>
+</div>

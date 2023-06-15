@@ -1,0 +1,44 @@
+<div *ngIf="hotel.id" class="row">
+    <div class="col-4">
+        <div class="card">
+            <h4 style="margin-bottom: -20px;text-align: center;margin-top: 20px;">{{hotel.nume}}</h4>
+            <img src="{{hotel.photoUrl || './assets/user.png'}}" alt="{{hotel.nume}}"
+                class="card-img-top img-thumbnail">
+            <div class="card-body">
+                <div>
+                    <strong>Locatie:</strong>
+                    <p>{{hotel.adresa}}</p>
+                </div>
+                <div>
+                    <strong>Nota:</strong>
+                    <p>{{hotel.rating}}</p>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="col-8">
+        <tabset class="hotelTabs-tabset" #hotelTabs>
+            <tab heading="Despre {{hotel.nume}}" (selectTab)="onTabActivated($event)">
+                <h4>Adresa</h4>
+                <p>{{hotel.adresa}}</p>
+                <h4>Nota</h4>
+                <p>{{hotel.rating}}</p>
+                <h4>Pret pe noapte camera dubla:</h4>
+                <p>{{hotel.pricePerNight}} RON </p>
+            </tab>
+            <tab heading="Imagini" (selectTab)="onTabActivated($event)">
+                <ngx-gallery [options]="galleryOptions" [images]="galleryImages" class="ngx-gallery"></ngx-gallery>
+            </tab>
+
+            <tab heading="Recenzii" (selectTab)="onTabActivated($event)" >
+                <app-hotel-reviews *ngIf="hotel.reviews" [reviews]="hotel.reviews" [hotelId]="hotel.id"></app-hotel-reviews>
+            </tab>
+
+            <tab heading="Editeaza Imagini">
+                <app-photo-editor [object]="hotel"></app-photo-editor>
+            </tab>
+        </tabset>
+    </div>
+</div>
