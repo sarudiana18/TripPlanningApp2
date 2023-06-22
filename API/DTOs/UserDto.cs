@@ -1,3 +1,6 @@
+using API.Entities;
+using Microsoft.IdentityModel.Protocols.OpenIdConnect;
+
 namespace API.DTOs
 {
     public class UserDto
@@ -8,6 +11,6 @@ namespace API.DTOs
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string NumeOrasCurent { get; set; }
-
+        public City  Oras {get; set;}
     }
 }

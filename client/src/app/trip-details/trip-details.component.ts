@@ -93,8 +93,8 @@ export class TripDetailsComponent implements OnInit {
             });
           } 
           if(this.tripParams.sourceCity && this.tripParams.destinationCity){
-            this.origin = { lat: this.tripParams.sourceCity.latitude, lng: this.tripParams.sourceCity.longitude };
-            this.destination = { lat: this.tripParams.destinationCity.latitude, lng: this.tripParams.destinationCity.longitude };
+            this.origin = { lat: parseFloat(this.tripParams.sourceCity.latitude.toString()), lng: parseFloat(this.tripParams.sourceCity.longitude.toString()) };
+            this.destination = { lat: parseFloat(this.tripParams.destinationCity.latitude.toString()), lng: parseFloat(this.tripParams.destinationCity.longitude.toString()) };
           } 
         });
 

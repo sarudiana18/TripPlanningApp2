@@ -78,15 +78,16 @@ export class MainTripApplicationComponent implements OnInit {
     }
     else {
       this.plecareDinOrasulCurent = false;
+      this.tripPlanningForm.controls["sourceCountry"].removeValidators([Validators.required]);
+      this.tripPlanningForm.controls["sourceState"].removeValidators([Validators.required]);
     }
   }
   ngAfterContentChecked() {
     this.cdref.detectChanges();
   }
   loadCities() {
-    if (this.tripParams?.destinationState) {
-      this.tripPlanningService.setTripParams(this.tripParams);
-      this.tripPlanningService.getCities(this.tripParams.destinationState.id).subscribe({
+    if (this.tripPlanningForm.controls['destinationState'].value) {
+      this.tripPlanningService.getCities(this.tripPlanningForm.controls['destinationState'].value.id).subscribe({
         next: response => {
           this.cities = response;
           if (this.cities.length == 0) {
@@ -108,9 +109,8 @@ export class MainTripApplicationComponent implements OnInit {
   }
 
   loadSourceCities() {
-    if (this.tripParams?.sourceState) {
-      this.tripPlanningService.setTripParams(this.tripParams);
-      this.tripPlanningService.getCities(this.tripParams.sourceState.id).subscribe({
+    if (this.tripPlanningForm.controls['sourceState'].value) {
+      this.tripPlanningService.getCities(this.tripPlanningForm.controls['sourceState'].value.id).subscribe({
         next: response => {
           this.sourceCities = response;
           if (this.sourceCities.length == 0) {
@@ -143,9 +143,8 @@ export class MainTripApplicationComponent implements OnInit {
   }
 
   loadStates() {
-    if (this.tripParams?.destinationCountry) {
-      this.tripPlanningService.setTripParams(this.tripParams);
-      this.tripPlanningService.getStates(this.tripParams.destinationCountry.id).subscribe({
+    if (this.tripPlanningForm.controls['destinationCountry'].value) {
+      this.tripPlanningService.getStates(this.tripPlanningForm.controls['destinationCountry'].value.id).subscribe({
         next: response => {
           this.states = response;
         }
@@ -154,9 +153,8 @@ export class MainTripApplicationComponent implements OnInit {
   }
 
   loadSourceStates() {
-    if (this.tripParams?.sourceCountry) {
-      this.tripPlanningService.setTripParams(this.tripParams);
-      this.tripPlanningService.getStates(this.tripParams.sourceCountry.id).subscribe({
+    if (this.tripPlanningForm.controls['sourceCountry'].value) {
+      this.tripPlanningService.getStates(this.tripPlanningForm.controls['sourceCountry'].value.id).subscribe({
         next: response => {
           this.sourceStates = response;
         }
@@ -174,16 +172,15 @@ export class MainTripApplicationComponent implements OnInit {
     this.tripParams = new TripParams();
   }
   generateResponseForSelectedValues() {
-    if (this.plecareDinOrasulCurent && this.user?.numeOrasCurent) {
-      this.tripParams.sourceCity = {} as City;
-      this.tripParams.sourceCity.name = this.user?.numeOrasCurent;
+    if (this.plecareDinOrasulCurent && this.user?.oras) {
+      this.tripParams.sourceCity = this.user.oras;
     }
     else if(!this.tripParams.sourceCity || this.tripParams.sourceCity.id != this.tripPlanningForm.controls["sourceState"].value.id){
       this.tripParams.sourceCity = this.tripPlanningForm.controls['sourceCity'].value;
     }
 
     if(!this.tripParams.destinationCity || this.tripParams.destinationCity.id != this.tripPlanningForm.controls["destinationState"].value.id){
-      this.tripParams.sourceCity = this.tripPlanningForm.controls['destinationCity'].value;
+      this.tripParams.destinationCity = this.tripPlanningForm.controls['destinationCity'].value;
     }
     this.tripParams.endDate = this.tripPlanningForm.controls['endDate'].value;
     this.tripParams.startDate = this.tripPlanningForm.controls['startDate'].value;

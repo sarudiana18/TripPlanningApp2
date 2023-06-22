@@ -16,8 +16,8 @@ namespace API.Helpers
             CreateMap<Photo, PhotoDto>();
             CreateMap<MemberUpdateDto, AppUser>();
             CreateMap<RegisterDto, AppUser>()
-                .ForMember(x=> x.City, y => y.MapFrom(z=> z.City.Name))
-                .ForMember(x=> x.Country, y => y.MapFrom(z=> z.Country.Name));
+                .ForMember(x=> x.CityNume, y => y.MapFrom(z=> z.City.Name))
+                .ForMember(x=> x.CountryNume, y => y.MapFrom(z=> z.Country.Name));
             CreateMap<DateTime, DateTime>().ConvertUsing(d => DateTime.SpecifyKind(d, DateTimeKind.Utc));
             CreateMap<DateTime?, DateTime?>().ConvertUsing(d => d.HasValue ? 
                 DateTime.SpecifyKind(d.Value, DateTimeKind.Utc) : null);

@@ -9,4 +9,5 @@ export interface User {
     roles: string[];
     
     numeOrasCurent: string;
+    oras: City;
 }

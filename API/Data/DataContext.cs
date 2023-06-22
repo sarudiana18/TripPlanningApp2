@@ -35,6 +35,12 @@ namespace API.Data
                 .HasForeignKey(ur => ur.UserId)
                 .IsRequired();
 
+             builder.Entity<AppUser>()
+                .HasOne(ur => ur.City)
+                .WithMany()
+                .HasForeignKey(ur => ur.CityId)
+                .IsRequired();
+
             builder.Entity<AppRole>()
                 .HasMany(ur => ur.UserRoles)
                 .WithOne(u => u.Role)

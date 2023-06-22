@@ -28,6 +28,7 @@ namespace API.Controllers
             var user = _mapper.Map<AppUser>(registerDto);
 
             user.UserName = registerDto.Username.ToLower();
+            user.CityId = registerDto.City.Id;
 
             var result = await _userManager.CreateAsync(user, registerDto.Password);
 
@@ -43,6 +44,7 @@ namespace API.Controllers
                 Token = await _tokenService.CreateToken(user),
                 FirstName = user.FirstName,
                 LastName = user.LastName,
+                Oras = registerDto.City,
                 NumeOrasCurent = registerDto.City.Name
             };
         }
@@ -52,6 +54,7 @@ namespace API.Controllers
         {
             var user = await _userManager.Users
                 .Include(p => p.Photos)
+                .Include(x => x.City)
                 .SingleOrDefaultAsync(x => x.UserName == loginDto.Username);
 
             if (user == null) return Unauthorized("invalid username");
@@ -67,7 +70,8 @@ namespace API.Controllers
                 PhotoUrl = user.Photos.FirstOrDefault(x => x.IsMain)?.Url,
                 FirstName = user.FirstName,
                 LastName = user.LastName,
-                NumeOrasCurent = user.City
+                Oras = user.City,
+                NumeOrasCurent = user.City.Name
             };
         }
 
