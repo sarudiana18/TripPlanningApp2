@@ -1,0 +1,50 @@
+
+<div style="display: flow-root;">
+    <div style = "overflow: hidden;">
+        <button class="add-button" type="button" (click)="addReview()">Adauga review</button>
+    </div>
+    
+    <div class="reviews">
+        <ul class="review-list">
+          <li class="review" *ngFor="let review of reviews">
+            <div class="review-header">
+                <h3 class="review-title">{{review.titlu}}</h3>
+                <span class="review-date">{{review.createdAtString}}</span>
+            </div>
+            <p class="review-description">{{review.descriereReview}}</p>
+            <div>
+                <strong>Nota review</strong>
+                <p>{{review.nota}}</p>
+            </div>
+            <span class="review-author">{{review.createdByNume}}</span>
+          </li>
+        </ul>
+    </div>
+</div>
+
+
+<p-dialog header="Adauga recenzie" [(visible)]="displayForAddingNewReview" [style]="{width: '50vw'}">
+    <div class="form-container">
+        <form *ngIf="displayForAddingNewReview" (ngSubmit)="submitReview()">
+            <div class="form-group">
+                <label for="titlu">Titlu</label>
+                <input type="text" id="titlu" name="titlu" [(ngModel)]="newReview.titlu" required>
+            </div>
+    
+            <div class="form-group">
+                <label for="descriere">Descriere</label>
+                <textarea id="descriere" name="descriere" [(ngModel)]="newReview.descriereReview"></textarea>
+            </div>
+            
+            
+            <div class="form-group">
+                <label for="rating">Nota</label>
+                <p-rating [(ngModel)]="newReview.nota" [stars]="10"></p-rating>
+            </div>
+    
+            
+            <button type="submit" class="btn btn-primary">Posteaza recenzia</button>
+          </form>
+    </div>
+</p-dialog>
+

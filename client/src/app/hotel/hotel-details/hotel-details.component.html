@@ -25,8 +25,9 @@
                 <p>{{hotel.adresa}}</p>
                 <h4>Nota</h4>
                 <p>{{hotel.rating}}</p>
-                <h4>Pret pe noapte camera dubla:</h4>
+                <h4>Pret pe noapte camera dubla de la:</h4>
                 <p>{{hotel.pricePerNight}} RON </p>
+                <button (click)="redirectToBooking()">Rezervă acum pe Booking.com</button>
             </tab>
             <tab heading="Imagini" (selectTab)="onTabActivated($event)">
                 <ngx-gallery [options]="galleryOptions" [images]="galleryImages" class="ngx-gallery"></ngx-gallery>
@@ -36,8 +37,8 @@
                 <app-hotel-reviews *ngIf="hotel.reviews" [reviews]="hotel.reviews" [hotelId]="hotel.id"></app-hotel-reviews>
             </tab>
 
-            <tab heading="Editeaza Imagini">
-                <app-photo-editor [object]="hotel"></app-photo-editor>
+            <tab *appHasRole="['Admin', 'Moderator']"  heading="Editeaza Imagini">
+                <app-photo-editor-hotel [object]="hotel"></app-photo-editor-hotel>
             </tab>
         </tabset>
     </div>

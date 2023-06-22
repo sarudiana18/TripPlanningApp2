@@ -24,6 +24,8 @@ namespace API.Data
         public IAtractieTuristicaRepository AtractieTuristicaRepository => new AtractieTuristicaRepository(_context, _mapper);
 
         public IReviewRepository ReviewsRepository => new ReviewRepository(_context, _mapper);
+        public IParcRepository ParcRepository => new ParcRepository(_context, _mapper);
+        public IRestaurantRepository RestaurantRepository => new RestaurantRepository(_context, _mapper);
 
         public async Task<bool> Complete()
         {

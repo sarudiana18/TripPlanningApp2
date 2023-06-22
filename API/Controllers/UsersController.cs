@@ -65,7 +65,6 @@ namespace API.Controllers
             };
 
             if (user.Photos.Count == 0) photo.IsMain = true;
-
             user.Photos.Add(photo);
 
             if (await _uow.Complete()) 

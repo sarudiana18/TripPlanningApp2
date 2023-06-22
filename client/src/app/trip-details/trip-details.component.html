@@ -5,7 +5,7 @@
             <span> Atractii turistice</span>
         </ng-template>
         <div class="row">
-            <div style = "overflow: hidden;">
+            <div *appHasRole="['Admin', 'Moderator']" style = "overflow: hidden;">
                 <button class="add-button" type="button" (click)="addAtractie()">Adauga atractie turistica</button>
             </div>
             <div class="col-2" *ngFor="let atractie of atractiiTuristice">
@@ -34,10 +34,89 @@
         </ng-template>
         <div class="row">
             <div style = "overflow: hidden;">
-                <button class="add-button" type="button" (click)="addHotel()">Adauga hotel</button>
+                <button *appHasRole="['Admin', 'Moderator']" class="add-button" type="button" (click)="addHotel()">Adauga hotel</button>
+                <!-- Filter Inputs -->
+<div>
+    <label for="nameFilter">Nume:</label>
+    <input type="text" id="nameFilter" placeholder="Enter name">
+  </div>
+  
+  <div>
+    <label for="categoryFilter">Nota:</label>
+    <p-rating [stars]="10"></p-rating>
+  </div>
+  
+  <!-- Sorting Inputs -->
+  <div>
+    <label for="sortCriteria">Sorteaza Dupa:</label>
+    <select id="sortCriteria">
+      <option value="name">Nume</option>
+      <option value="price">Pret</option>
+      <option value="rating">Nota</option>
+    </select>
+  </div>
+  
+  <button>Sterge toate criteriile de filtrare si sortare</button>
+  
             </div>
-            <div class="col-2" *ngFor="let hotel of hoteluri">
-                <app-hotel [hotel]="hotel"></app-hotel>
+            <div class="col-2" *ngFor="let hotel of hoteluri" >
+                <app-hotel [hotel]="hotel" [startDate]="tripParams.startDate" [endDate]="tripParams.endDate"></app-hotel>
+            </div>
+        </div>
+        <div class="d-flex justify-content-center" *ngIf="pagination">
+            <pagination 
+                [boundaryLinks]="true" 
+                [totalItems]="pagination.totalItems"
+                [itemsPerPage]="pagination.itemsPerPage"
+                [maxSize]="10"
+                [(ngModel)]="pagination.currentPage"
+                (pageChanged)="pageChanged($event)"
+                previousText="&lsaquo;" 
+                nextText="&rsaquo;" 
+                firstText="&laquo;" 
+                lastText="&raquo;">
+            </pagination>
+        </div>
+    </p-tabPanel>
+    <p-tabPanel>
+        <ng-template pTemplate="header">
+            <!-- <i class="bi bi-houses-fill"></i> -->
+            <span>Restaurante</span>
+        </ng-template>
+        <div class="row">
+            <div *appHasRole="['Admin', 'Moderator']"  style = "overflow: hidden;">
+                <button class="add-button" type="button" (click)="addRestaurant()">Adauga restaurant</button>
+            </div>
+            <div class="col-2" *ngFor="let restaurant of restaurante">
+                <app-restaurant [restaurant]="restaurant"></app-restaurant>
+            </div>
+        </div>
+        <div class="d-flex justify-content-center" *ngIf="pagination">
+            <pagination 
+                [boundaryLinks]="true" 
+                [totalItems]="pagination.totalItems"
+                [itemsPerPage]="pagination.itemsPerPage"
+                [maxSize]="10"
+                [(ngModel)]="pagination.currentPage"
+                (pageChanged)="pageChanged($event)"
+                previousText="&lsaquo;" 
+                nextText="&rsaquo;" 
+                firstText="&laquo;" 
+                lastText="&raquo;">
+            </pagination>
+        </div>
+    </p-tabPanel>
+    <p-tabPanel>
+        <ng-template pTemplate="header">
+            <!-- <i class="bi bi-houses-fill"></i> -->
+            <span>Parcuri</span>
+        </ng-template>
+        <div class="row">
+            <div *appHasRole="['Admin', 'Moderator']" style = "overflow: hidden;">
+                <button class="add-button" type="button" (click)="addParc()">Adauga parc</button>
+            </div>
+            <div class="col-2" *ngFor="let parc of parcuri">
+                <app-parc [parc]="parc"></app-parc>
             </div>
         </div>
         <div class="d-flex justify-content-center" *ngIf="pagination">
@@ -61,10 +140,10 @@
             <span>Rute</span>
         </ng-template>
         <div class="row">
-            <div class="map-container">
-                <agm-map [latitude]="48.85637149999999" [longitude]="2.3532147" [zoom]="4">
-                    <agm-marker [latitude]="48.85637149999999" [longitude]="2.3532147"></agm-marker>
-                    <agm-marker [latitude]="44.4265892" [longitude]="26.1027819"></agm-marker>
+            <div class="map-container" *ngIf="origin && destination">
+                <agm-map [latitude]="origin.lat" [longitude]="origin.lng" [zoom]="4">
+                    <agm-marker [latitude]="origin.lat" [longitude]="origin.lng"></agm-marker>
+                    <agm-marker [latitude]="destination.lat" [longitude]="destination.lng"></agm-marker>
                     <agm-direction [origin]="origin" [destination]="destination"></agm-direction>
                 </agm-map>
             </div> 
@@ -82,7 +161,7 @@
     
             <div class="form-group">
                 <label for="adresa">Adresa</label>
-                <textarea id="adresa" name="adrsea" [(ngModel)]="newHotel.adresa"></textarea>
+                <textarea style="width: 100%;" id="adresa" name="adrsea" [(ngModel)]="newHotel.adresa"></textarea>
             </div>
             
             
@@ -105,16 +184,56 @@
     
             <div class="form-group">
                 <label for="descriere">Descriere</label>
-                <textarea id="descriere" name="descriere" [(ngModel)]="newAtractie.descriere"></textarea>
+                <textarea style="width: 100%;" id="descriere" name="descriere" [(ngModel)]="newAtractie.descriere"></textarea>
             </div>
             
             
             <div class="form-group">
                 <label for="adresa">Adresa</label>
-                <textarea id="adresa" name="adresa" [(ngModel)]="newAtractie.adresa"></textarea>
+                <textarea style="width: 100%;" id="adresa" name="adresa" [(ngModel)]="newAtractie.adresa"></textarea>
             </div>
     
             <button type="submit" class="btn btn-primary">Adauga atractie</button>
+          </form>
+    </div>
+</p-dialog>
+
+<p-dialog header="Adauga parc" [(visible)]="displayForAddingNewParc" [style]="{width: '50vw'}">
+    <div class="form-container">
+        <form *ngIf="displayForAddingNewParc" (ngSubmit)="submitParc()">
+            <div class="form-group">
+                <label for="nume">Nume</label>
+                <input type="text" id="nume" name="nume" [(ngModel)]="newParc.nume" required>
+            </div>
+    
+            <div class="form-group">
+                <label for="adresa">Adresa</label>
+                <textarea style="width: 100%;" id="adresa" name="adrsea" [(ngModel)]="newParc.adresa"></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary">Adauga parc</button>
+          </form>
+    </div>
+</p-dialog>
+
+<p-dialog header="Adauga restaurant" [(visible)]="displayForAddingNewRestaurant" [style]="{width: '50vw'}">
+    <div class="form-container">
+        <form *ngIf="displayForAddingNewRestaurant" (ngSubmit)="submitRestaurant()">
+            <div class="form-group">
+                <label for="nume">Nume</label>
+                <input type="text" id="nume" name="nume" [(ngModel)]="newRestaurant.nume" required>
+            </div>
+    
+            <div class="form-group">
+                <label for="adresa">Adresa</label>
+                <textarea style="width: 100%;" id="adresa" name="adresa" [(ngModel)]="newRestaurant.adresa"></textarea>
+            </div>
+            
+            
+            <div class="form-group">
+                <label for="specific">Specific</label>
+                <input type="text" id="specific" name="specific" [(ngModel)]="newRestaurant.specific" required>
+            </div>
+            <button type="submit" class="btn btn-primary">Adauga restaurant</button>
           </form>
     </div>
 </p-dialog>

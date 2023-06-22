@@ -4,6 +4,7 @@ import { Review } from "./review";
 export interface Hotel{
     nume: string;
     pricePerNight?: number;
+    pricePerNightCameraTripla?: number;
     rating?: number;
     adresa:string;
     cityId: number;

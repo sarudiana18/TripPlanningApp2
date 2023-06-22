@@ -13,6 +13,9 @@ namespace API.Interfaces
         Review GetReview(Review City);
         List<Review> GetAll();
         List<Review> GetAllByHotelId(int hotelId);
+        List<Review> GetAllByParcId(int parcId);
+        List<Review> GetAllByRestaurantId(int restaurantId);
+
     }
     
 }

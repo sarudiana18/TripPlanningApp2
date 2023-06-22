@@ -5,6 +5,10 @@ import { AtractieTuristica } from '../_models/atractieturistica';
 import { Hotel } from '../_models/hotel';
 import { ActivatedRoute, Router } from '@angular/router';
 import { TripPlanningService } from '../_services/tripplanning.service';
+import { Parc } from '../_models/parc';
+import { Restaurant } from '../_models/restaurant';
+import { getPaginatedResult, getPaginationHeaders } from '../_services/paginationHelper';
+import { map } from 'rxjs';
 
 @Component({
   selector: 'app-trip-details',
@@ -14,15 +18,13 @@ import { TripPlanningService } from '../_services/tripplanning.service';
 export class TripDetailsComponent implements OnInit {
 
   pagination: Pagination | undefined;
-  tripParams: TripParams | undefined;
+  startDate: any;
+  endDate: any;
+  tripParams =  {} as TripParams;
   atractiiTuristice: AtractieTuristica[] = [];
   hoteluri:Hotel[] = [];
-  originCity: string = '';
-  destinationCity: string = '';
-  originLat = 37.7749; // Set the origin latitude
-  originLng = -122.4194; // Set the origin longitude
-  destinationLat = 34.0522; // Set the destination latitude
-  destinationLng = -118.2437; // Set the destination longitude
+  parcuri: Parc[] = [];
+  restaurante: Restaurant[] = [];
   origin: any;
   cityIdFromParams: number = 0;
   destination: any;
@@ -32,6 +34,7 @@ export class TripDetailsComponent implements OnInit {
     nume: '',
     adresa:'',
     pricePerNight: 0,
+    pricePerNightCameraTripla:0,
     cityId:0,
   };
   validationErrors: string[] | undefined;
@@ -43,33 +46,58 @@ export class TripDetailsComponent implements OnInit {
     descriere:'',
     adresa:'',
   };
-  constructor(private route: ActivatedRoute, 
-    private router: Router, private tripPlanningService : TripPlanningService) { 
-      this.origin = { lat: "48.85637149999999", lng: "2.3532147" };
-      this.destination = { lat: "44.4265892", lng: "26.1027819" };
+  displayForAddingNewParc: boolean = false;
+  newParc: Parc = {
+     cityId: 0,
+    nume:'',
+    adresa:'',
+  };
+  displayForAddingNewRestaurant: boolean = false;
+  newRestaurant: Restaurant = {
+    cityId: 0,
+    nume:'',
+    specific:'',
+    adresa:'',
+  };
+  constructor(private route: ActivatedRoute, private tripPlanningService : TripPlanningService) { 
+      
     }
 
   ngOnInit(): void {
-    this.route.params.subscribe(params => {
-      this.originCity = params['sourceCityName'];
-      this.destinationCity = params['destinationCityName'];
-      let cityId = params['destinationCityId'];
-      if(cityId){
-        this.cityIdFromParams = cityId;
-        this.tripPlanningService.getAtractiiTuristiceByCityId(cityId).subscribe({
-          next: response => {
-            this.atractiiTuristice = response;
-          }
+    this.route.paramMap
+    .pipe(map(() => window.history.state)).subscribe(res=>{
+          this.tripParams = res;
+          console.log(res);
+          if( this.tripParams.destinationCity.id){
+            this.cityIdFromParams =  this.tripParams.destinationCity.id;
+            this.tripPlanningService.getAtractiiTuristiceByCityId( this.tripParams.destinationCity.id).subscribe({
+              next: response => {
+                this.atractiiTuristice = response;
+              }
+            });
+            this.tripPlanningService.getHoteluriByCityIdAndByBugetAndByNoOfNightsAndByNrPersoane( this.tripParams.destinationCity.id,
+              this.tripParams.buget, this.tripParams.nrNopti, this.tripParams.nrPersoane).subscribe({
+              next: response => {
+                this.hoteluri = response;
+              }
+            });
+            this.tripPlanningService.getRestauranteByCityId( this.tripParams.destinationCity.id).subscribe({
+              next: response => {
+                this.restaurante = response;
+              }
+            });
+            this.tripPlanningService.getParcuriByCityId( this.tripParams.destinationCity.id).subscribe({
+              next: response => {
+                this.parcuri = response;
+              }
+            });
+          } 
+          if(this.tripParams.sourceCity && this.tripParams.destinationCity){
+            this.origin = { lat: this.tripParams.sourceCity.latitude, lng: this.tripParams.sourceCity.longitude };
+            this.destination = { lat: this.tripParams.destinationCity.latitude, lng: this.tripParams.destinationCity.longitude };
+          } 
         });
-        this.tripPlanningService.getHoteluriByCityId(cityId).subscribe({
-          next: response => {
-            this.hoteluri = response;
-          }
-        });
-      } 
-      // if(this.originCity != '' && this.destinationCity != ''){
-      // }
-    });
+
   }
 
   pageChanged(event: any) {
@@ -87,20 +115,20 @@ export class TripDetailsComponent implements OnInit {
     
     // Add the new review to the reviews array
     this.tripPlanningService.addNewAtractieTuristica(this.newAtractie).subscribe({
-      next: () => {
-        this.atractiiTuristice.push(this.newAtractie);
+      next: response => {
+        this.atractiiTuristice.push(response);
+        this.displayForAddingNewAttraction = false;
+        this.newAtractie = {
+          cityId: 0,
+          nume:'',
+          descriere:'',
+          adresa:'',
+        };
       },
       error: error => {
         this.validationErrors = error
       } 
     })
-    // Clear the form fields
-    this.newAtractie = {
-      cityId: 0,
-      nume:'',
-      descriere:'',
-      adresa:'',
-    };
   }
   addHotel(){
     this.displayForAddingNewHotel = true;
@@ -111,19 +139,69 @@ export class TripDetailsComponent implements OnInit {
     // Add the new review to the reviews array
 
     this.tripPlanningService.addNewHotel(this.newHotel).subscribe({
-      next: () => {
-        this.hoteluri.push(this.newHotel);
+      next: response => {
+        this.hoteluri.push(response);
+        this.displayForAddingNewHotel=false;
+        // Clear the form fields
+        this.newHotel = {
+          nume: '',
+          adresa:'',
+          pricePerNight: 0,
+          pricePerNightCameraTripla:0,
+          cityId:0,
+        };
       },
       error: error => {
         this.validationErrors = error
       } 
     })
-    // Clear the form fields
-    this.newHotel = {
-      nume: '',
-      adresa:'',
-      pricePerNight: 0,
-      cityId:0,
-    };
+    
+  }
+
+  addParc(){
+    this.displayForAddingNewParc = true;
+  }
+  submitParc(){
+    this.newParc.cityId= this.cityIdFromParams;
+    
+    // Add the new review to the reviews array
+    this.tripPlanningService.addNewParc(this.newParc).subscribe({
+      next: response => {
+        this.parcuri.push(response);
+        this.displayForAddingNewParc = false;
+        this.newParc = {
+          cityId: 0,
+          nume:'',
+          adresa:'',
+        };
+      },
+      error: error => {
+        this.validationErrors = error
+      } 
+    })
+  }
+
+  addRestaurant(){
+    this.displayForAddingNewRestaurant = true;
+  }
+  submitRestaurant(){
+    this.newRestaurant.cityId = this.cityIdFromParams;
+    
+    // Add the new review to the reviews array
+    this.tripPlanningService.addNewRestaurant(this.newRestaurant).subscribe({
+      next: response => {
+        this.restaurante.push(response);
+        this.displayForAddingNewRestaurant = false;
+        this.newRestaurant = {
+          cityId: 0,
+          nume:'',
+          specific :'',
+          adresa:'',
+        };
+      },
+      error: error => {
+        this.validationErrors = error
+      } 
+    })
   }
 }

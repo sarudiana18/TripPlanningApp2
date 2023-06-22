@@ -1,0 +1,10 @@
+<div class="card mb-4" *ngIf="parc">
+    <div class="card-img-wrapper">
+        <img src="{{parc.photoUrl || './assets/user.png'}}" alt="{{parc.nume}}" class="card-img-top">
+        <ul class="list-inline atractie-icons animate text-center">
+            <li class="list-inline-item">
+                <button routerLink="/parcuri/{{parc.id}}" class="bi bi-eye"></button>
+            </li>
+        </ul>
+    </div>
+</div>

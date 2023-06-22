@@ -5,7 +5,9 @@ export interface Review{
     created_At: Date;
 
     createdAtString?: string;
-    hotelId: number;
+    hotelId?: number;
+    parcId?: number;
+    restaurantId?: number;
     createdBy: number;
     createdByNume?: string;
     id?: number;

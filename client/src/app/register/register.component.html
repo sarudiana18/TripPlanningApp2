@@ -12,10 +12,17 @@
         [label]="'Email'"></app-text-input>
     <app-date-picker [formControl]="$any(registerForm.controls['dateOfBirth'])" 
         [label]="'Data nasterii'" [maxDate]="maxDate"></app-date-picker >
-    <app-text-input [formControl]="$any(registerForm.controls['city'])" 
-        [label]="'Orasul curent'"></app-text-input>
-    <app-text-input [formControl]="$any(registerForm.controls['country'])" 
-        [label]="'Tara curenta'"></app-text-input>
+    <!-- <app-text-input [formControl]="$any(registerForm.controls['city'])" 
+        [label]="'Orasul curent'"></app-text-input> -->
+    <p-dropdown [options]="countries" formControlName="country" optionLabel="name"
+        [filter]="true" filterBy="name" [showClear]="true" placeholder="Tara curenta"
+        (onChange)="loadCities()">
+    </p-dropdown>
+    <p-dropdown [options]="cities" formControlName="city" optionLabel="name"
+        [filter]="true" filterBy="name" [showClear]="true" placeholder="Orasul curent">
+    </p-dropdown>
+    <!-- <app-text-input [formControl]="$any(registerForm.controls['country'])" 
+        [label]="'Tara curenta'"></app-text-input> -->
     <app-text-input [formControl]="$any(registerForm.controls['password'])" 
         [label]="'Parola'" [type]="'password'">
     </app-text-input>

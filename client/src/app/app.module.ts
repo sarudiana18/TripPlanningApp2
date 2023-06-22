@@ -44,6 +44,16 @@ import { AtractieTuristicaDetailsComponent } from './atractie-turistica/atractie
 import { HotelReviewsComponent } from './hotel/hotel-reviews/hotel-reviews.component';
 import { AgmCoreModule } from '@agm/core';
 import { AgmDirectionModule } from 'agm-direction' 
+import { ParcDetailsComponent } from './parc/parc-details/parc-details.component';
+import { ParcReviewsComponent } from './parc/parc-reviews/parc-reviews.component';
+import { RestaurantComponent } from './restaurant/restaurant.component';
+import { ParcComponent } from './parc/parc.component';
+import { RestaurantDetailsComponent } from './restaurant/restaurant-details/restaurant-details.component';
+import { RestaurantReviewsComponent } from './restaurant/restaurant-reviews/restaurant-reviews.component';
+import { PhotoEditorComponentAtractieTuristica } from './atractie-turistica/photo-editor/photo-editor.component';
+import { PhotoEditorComponentRestaurant } from './restaurant/photo-editor/photo-editor.component';
+import { PhotoEditorComponentHotel } from './hotel/photo-editor/photo-editor.component';
+import { PhotoEditorComponentParc } from './parc/photo-editor/photo-editor.component';
 
 @NgModule({
   declarations: [
@@ -72,7 +82,17 @@ import { AgmDirectionModule } from 'agm-direction'
     HotelComponent,
     HotelDetailsComponent,
     AtractieTuristicaDetailsComponent,
-    HotelReviewsComponent
+    HotelReviewsComponent,
+    ParcComponent,
+    ParcDetailsComponent,
+    ParcReviewsComponent,
+    RestaurantComponent,
+    RestaurantDetailsComponent,
+    RestaurantReviewsComponent,
+    PhotoEditorComponentAtractieTuristica,
+    PhotoEditorComponentRestaurant,
+    PhotoEditorComponentHotel,
+    PhotoEditorComponentParc
   ],
   imports: [
     BrowserAnimationsModule,

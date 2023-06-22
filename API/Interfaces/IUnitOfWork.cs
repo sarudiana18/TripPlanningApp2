@@ -9,6 +9,8 @@ namespace API.Interfaces
         IStateRepository StateRepository {get;}
         IAtractieTuristicaRepository AtractieTuristicaRepository {get;}
         IReviewRepository ReviewsRepository {get;}
+        IParcRepository ParcRepository {get;}
+        IRestaurantRepository RestaurantRepository {get;}
 
         Task<bool> Complete();
         bool HasChanges();

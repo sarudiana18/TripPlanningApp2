@@ -9,6 +9,9 @@ import { Hotel } from '../_models/hotel';
 export class HotelComponent implements OnInit {
 
   @Input() hotel: Hotel | undefined;
+  @Input() startDate: string | undefined;
+  @Input() endDate: string | undefined;
+
   constructor() { }
 
   ngOnInit(): void {

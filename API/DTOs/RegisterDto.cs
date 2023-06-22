@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using API.Entities;
 using Microsoft.AspNetCore.Mvc.RazorPages.Infrastructure;
 
 namespace API.DTOs
@@ -12,8 +13,8 @@ namespace API.DTOs
         [Required] public string LastName { get; set; }
         [Required] public string Email { get; set; }
         [Required] public DateOnly? DateOfBirth { get; set; } // optional to make required work!
-        [Required] public string City { get; set; }
-        [Required] public string Country { get; set; }
+        [Required] public City City { get; set; }
+        [Required] public Country Country { get; set; }
 
         [Required]
         [StringLength(15, MinimumLength = 6)]

@@ -36,15 +36,42 @@ namespace API.Data
         }
         public List<Hotel> GetAll()
         {
-            return _context.Hoteluri.Include(p=> p.Photos).Include(r=> r.Reviews).ToList();
+            return _context.Hoteluri.Include(p=> p.Photos).Include(r=> r.Reviews).ThenInclude(y=> y.CreatedByUser).ToList();
         }
         public List<Hotel> GetAllByCityId(int cityId)
         {
-            return _context.Hoteluri.Where(x=> x.CityId == cityId).Include(p=> p.Photos).Include(r=> r.Reviews).ToList();
+            return _context.Hoteluri.Where(x=> x.CityId == cityId).Include(p=> p.Photos).Include(r=> r.Reviews).ThenInclude(y=> y.CreatedByUser).ToList();
+        }
+        public List<Hotel> GetAllByCityIdAndBugetAndNrNoptiAndNrPersoane(int cityId, int buget, int nrNopti, int nrPersoane)
+        {
+            //camere duble sau triple
+            var nrCamereDuble = 0;
+            var nrCamereTriple = 0;
+            if(nrPersoane >0 && nrPersoane%2 ==0){
+                nrCamereDuble = nrPersoane/2;
+            }
+            else if( nrPersoane >1){
+                nrCamereTriple = 1;
+                nrCamereDuble = (nrPersoane-3)/2; 
+                return _context.Hoteluri.Where(x=> x.CityId == cityId && 
+                (x.PricePerNight <= (!x.PricePerNightCameraTripla.HasValue || x.PricePerNightCameraTripla.Value==0? buget/nrNopti/nrCamereDuble+1:
+                (buget - x.PricePerNightCameraTripla)/nrNopti/nrCamereDuble)))
+                .Include(p=> p.Photos).Include(r=> r.Reviews).ThenInclude(y=> y.CreatedByUser).ToList();
+            }
+            else if(nrPersoane == 1){
+                nrCamereDuble = 1;
+            }
+
+            return _context.Hoteluri.Where(x=> x.CityId == cityId && 
+            (x.PricePerNight <= buget/nrNopti/nrCamereDuble)).Include(p=> p.Photos).Include(r=> r.Reviews).ThenInclude(y=> y.CreatedByUser).ToList();
         }
         public bool VerificaExistentaHotel(string numeHotel, int CityId)
         {
             return _context.Hoteluri.Any(x=> x.Nume == numeHotel && x.CityId == CityId);
+        }
+        public Hotel GetHotelByPhotoId(int photoId)
+        {
+           return _context.Hoteluri.Where(x=> x.Photos.Any(y=> y.Id == photoId)).Include(p=> p.Photos).Include(r=> r.Reviews).ThenInclude(y=> y.CreatedByUser).FirstOrDefault();
         }
     }
 }

@@ -12,12 +12,16 @@ namespace API.Data
         public DataContext(DbContextOptions options) : base(options)
         {
         }
+        
+        public DbSet<Hotel> Hoteluri { get; set; }
+
         public DbSet<City> Cities { get; set; }
         public DbSet<Country> Countries { get; set; }
         public DbSet<State> States { get; set; }
 
         public DbSet<AtractieTuristica> AtractiiTuristice { get; set; }
-        public DbSet<Hotel> Hoteluri { get; set; }
+        public DbSet<Restaurant> Restaurante { get; set; }
+        public DbSet<Parc> Parcuri { get; set; }
         public DbSet<Review> Reviews { get; set; }
 
 
@@ -71,6 +75,16 @@ namespace API.Data
                 .HasMany(x=> x.Reviews)
                 .WithOne(x=> x.Hotel)
                 .HasForeignKey(x=> x.HotelId);
+
+            builder.Entity<Restaurant>()
+                .HasMany(x=> x.Reviews)
+                .WithOne(x=> x.Restaurant)
+                .HasForeignKey(x=> x.RestaurantId);
+            
+            builder.Entity<Parc>()
+                .HasMany(x=> x.Reviews)
+                .WithOne(x=> x.Parc)
+                .HasForeignKey(x=> x.ParcId);
         }
 
         protected override void ConfigureConventions(ModelConfigurationBuilder builder)

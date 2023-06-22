@@ -8,6 +8,7 @@ import { Photo } from 'src/app/_models/photo';
 import { User } from 'src/app/_models/user';
 import { AccountService } from 'src/app/_services/account.service';
 import { MembersService } from 'src/app/_services/member.service';
+import { TripPlanningService } from 'src/app/_services/tripplanning.service';
 import { environment } from 'src/environments/environment';
 
 @Component({
@@ -16,10 +17,7 @@ import { environment } from 'src/environments/environment';
   styleUrls: ['./photo-editor.component.css']
 })
 export class PhotoEditorComponent implements OnInit {
-  @Input() object: any | undefined;
-  // @Input() hotel: Hotel | undefined;
-  // @Input() atractie: AtractieTuristica | undefined;
-
+  @Input() object: Member | undefined;
   uploader: FileUploader | undefined;
   hasBaseDropZoneOver = false;
   baseUrl = environment.apiUrl;
@@ -43,7 +41,6 @@ export class PhotoEditorComponent implements OnInit {
   }
 
   setMainPhoto(photo: Photo) {
-    if(typeof(this.object)== typeof({} as Member)){
       this.memberService.setMainPhoto(photo.id).subscribe({
         next: () => {
           if (this.user && this.object) {
@@ -57,19 +54,16 @@ export class PhotoEditorComponent implements OnInit {
           }
         }
       })
-    }
   }
 
   deletePhoto(photoId: number) {
-    if(typeof(this.object)== typeof({} as Member)){
-      this.memberService.deletePhoto(photoId).subscribe({
-        next: _ => {
-          if (this.object) {
-            this.object.photos = this.object.photos.filter((x: { id: number; }) => x.id !== photoId);
-          }
+    this.memberService.deletePhoto(photoId).subscribe({
+      next: _ => {
+        if (this.object) {
+          this.object.photos = this.object.photos.filter((x: { id: number; }) => x.id !== photoId);
         }
-      })
-    }
+      }
+    })
   }
 
   initializeUploader() {
@@ -90,12 +84,10 @@ export class PhotoEditorComponent implements OnInit {
     this.uploader.onSuccessItem = (item, response, status, headers) => {
       if (response) {
         const photo = JSON.parse(response);
-        if(typeof(this.object)== typeof({} as Member)){
-          if (photo.isMain && this.user && this.object) {
-            this.user.photoUrl = photo.url;
-            this.object.photoUrl = photo.url;
-            this.accountService.setCurrentUser(this.user);
-          }
+        if (photo.isMain && this.user && this.object) {
+          this.user.photoUrl = photo.url;
+          this.object.photoUrl = photo.url;
+          this.accountService.setCurrentUser(this.user);
         }
         this.object?.photos.push(photo);
       }

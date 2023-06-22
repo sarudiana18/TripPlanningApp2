@@ -3,6 +3,9 @@ import { AbstractControl, FormBuilder, FormControl, FormGroup, ValidatorFn, Vali
 import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { AccountService } from '../_services/account.service';
+import { City } from '../_models/city';
+import { Country } from '../_models/country';
+import { TripPlanningService } from '../_services/tripplanning.service';
 
 @Component({
   selector: 'app-register',
@@ -14,13 +17,16 @@ export class RegisterComponent implements OnInit {
   registerForm: FormGroup = new FormGroup({});
   maxDate: Date = new Date();
   validationErrors: string[] | undefined;
+  cities: City[] = [];
+  countries: Country[] = [];
 
   constructor(private accountService: AccountService, private toastr: ToastrService, 
-      private fb: FormBuilder, private router: Router) { }
+      private fb: FormBuilder, private router: Router, private tripPlanningService: TripPlanningService) { }
 
   ngOnInit(): void {
     this.initializeForm();
     this.maxDate.setFullYear(this.maxDate.getFullYear() -18);
+    this.loadCountries();
   }
 
   initializeForm() {
@@ -33,7 +39,7 @@ export class RegisterComponent implements OnInit {
       city: ['', Validators.required],
       country: ['', Validators.required],
       password: ['', [Validators.required, 
-        Validators.minLength(6), Validators.maxLength(8), Validators.pattern(/[A-Z]/)]],
+        Validators.minLength(8), Validators.maxLength(16), Validators.pattern(/[A-Z]/)]],
       confirmPassword: ['', [Validators.required, this.matchValues('password')]],
     });
     this.registerForm.controls['password'].valueChanges.subscribe({
@@ -69,6 +75,25 @@ export class RegisterComponent implements OnInit {
     let theDob = new Date(dob);
     return new Date(theDob.setMinutes(theDob.getMinutes()-theDob.getTimezoneOffset()))
       .toISOString().slice(0,10);
+  }
+  loadCities() { 
+    { if(this.registerForm.controls['country'].value){
+      console.log(this.registerForm.controls['country'].value);
+    }
+      this.tripPlanningService.getCitiesByCountryId(this.registerForm.controls['country'].value.id).subscribe({
+        next: response => {
+          this.cities = response;
+        }
+      })
+    }
+  }
+
+  loadCountries() {
+      this.tripPlanningService.getCountries().subscribe({
+        next: response => {
+          this.countries = response;
+        }
+      })
   }
 
 }

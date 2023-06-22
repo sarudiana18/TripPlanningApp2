@@ -43,6 +43,19 @@ namespace API.Controllers
 
             return Ok(listaHoteluriDto);
         }
+        [HttpGet("getHotelByCityIdAndBugetAndNrNoptiAndNrPersoane/{CityId}/{Buget}/{NrNopti}/{NrPersoane}")]
+        public async Task<ActionResult<List<HotelDto>>> GetAllHoteluriByCityIdAndBugetAndNrNoptiAndNrPersoane(int CityId,
+        int buget, int nrNopti, int nrPersoane)
+        {
+            List<HotelDto> listaHoteluriDto = new List<HotelDto>();
+
+            var listaHoteluri = _uow.HotelRepository.GetAllByCityIdAndBugetAndNrNoptiAndNrPersoane(CityId, buget, nrNopti, nrPersoane);
+            
+            listaHoteluriDto = _mapper.Map<List<HotelDto>>(listaHoteluri);
+
+            return Ok(listaHoteluriDto);
+        }
+        
         [HttpGet("getHotelById/{hotelId}")]
         public async Task<ActionResult<List<HotelDto>>> GetHotelById(int hotelId)
         {
@@ -55,31 +68,17 @@ namespace API.Controllers
         }
 
         [HttpPost("addHotel")]
-        public async Task<ActionResult> AddHotel(HotelDto hotelDto,  IFormFile file)
+        public async Task<ActionResult> AddHotel(HotelDto hotelDto)
         {
             if (_uow.HotelRepository.VerificaExistentaHotel(hotelDto.Nume, hotelDto.CityId)) return BadRequest("Atractia turistica exista deja pentru acest oras");
             
-            var result = await _photoService.AddPhotoAsync(file);
-
-            if (result.Error != null) return BadRequest(result.Error.Message);
-
-            var photo = new Photo
-            {
-                Url = result.SecureUrl.AbsoluteUri,
-                PublicId = result.PublicId,
-                IsMain = true
-            };
-
             var hotel = _mapper.Map<Hotel>(hotelDto);
-            
-            hotel.Photos.Add(photo);
 
             _uow.HotelRepository.AdaugaHotel(hotel);
 
             if (await _uow.Complete()) 
             {
-                return CreatedAtAction(nameof(AddHotel), 
-                    new {numeHotel = hotel.Nume}, _mapper.Map<PhotoDto>(photo));
+                return Ok(hotel);
             }
             else{
                 return BadRequest("Problem adding hotel turistca");
@@ -115,5 +114,52 @@ namespace API.Controllers
 
             return BadRequest("Problem adding photo");
         }
+         [HttpPut("set-main-photo/{photoId}")]
+        public async Task<ActionResult> SetMainPhoto(int photoId)
+        {
+
+            var hotel = _uow.HotelRepository.GetHotelByPhotoId(photoId);
+            if (hotel == null) return NotFound();
+
+            var photo = hotel.Photos.FirstOrDefault(x => x.Id == photoId);
+
+            if (photo == null) return NotFound();
+
+            if (photo.IsMain) return BadRequest("Aceasta poza este deja setata ca poza principala");
+
+            var currentMain = hotel.Photos.FirstOrDefault(x => x.IsMain);
+            if (currentMain != null) currentMain.IsMain = false;
+            photo.IsMain = true;
+
+            if (await _uow.Complete()) return NoContent();
+
+            return BadRequest("Problem setting the main photo");
+        }
+
+         [HttpDelete("delete-photo/{photoId}")]
+        public async Task<ActionResult> DeletePhoto(int photoId)
+        {
+            var hotel = _uow.HotelRepository.GetHotelByPhotoId(photoId);
+            if (hotel == null) return NotFound();
+
+            var photo = hotel.Photos.FirstOrDefault(x => x.Id == photoId);
+
+            if (photo == null) return NotFound();
+
+            if (photo.IsMain) return BadRequest("Nu puteti sterge poza principala!");
+
+            if (photo.PublicId != null)
+            {
+                var result = await _photoService.DeletePhotoAsync(photo.PublicId);
+                if (result.Error != null) return BadRequest(result.Error.Message);
+            }
+
+            hotel.Photos.Remove(photo);
+
+            if (await _uow.Complete()) return Ok();
+
+            return BadRequest("Problem deleting photo");
+        }
+        
     }
 }

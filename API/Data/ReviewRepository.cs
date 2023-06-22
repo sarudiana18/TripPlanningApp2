@@ -42,5 +42,13 @@ namespace API.Data
         {
             return _context.Reviews.Where(x=> x.HotelId == hotelId).Include(x=> x.CreatedByUser).ToList();
         }
+        public List<Review> GetAllByParcId(int parcId)
+        {
+            return _context.Reviews.Where(x=> x.ParcId == parcId).Include(x=> x.CreatedByUser).ToList();
+        }
+        public List<Review> GetAllByRestaurantId(int restaurantId)
+        {
+            return _context.Reviews.Where(x=> x.RestaurantId == restaurantId).Include(x=> x.CreatedByUser).ToList();
+        }
     }
 }

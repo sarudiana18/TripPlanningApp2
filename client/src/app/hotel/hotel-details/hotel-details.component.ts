@@ -19,6 +19,9 @@ export class HotelDetailsComponent implements OnInit {
 
   @ViewChild('hotelTabs', {static: true}) hotelTabs?: TabsetComponent;
   hotel: Hotel = {} as Hotel;
+  startDate: string = "";
+  endDate: string = "";
+
   galleryOptions: NgxGalleryOptions[] = [];
   galleryImages: NgxGalleryImage[] = [];
   activeTab?: TabDirective;
@@ -38,6 +41,8 @@ export class HotelDetailsComponent implements OnInit {
   ngOnInit(): void {
     this.route.params.subscribe(params=>{
       let hotelId = params['hotelId'];
+      this.startDate = params['startDate'];
+      this.endDate = params['endDate'];
       if(hotelId){
         this.tripPlanningService.getHotelById(hotelId).subscribe({
           next: response => {
@@ -88,5 +93,27 @@ export class HotelDetailsComponent implements OnInit {
   }
   onTabActivated(data: TabDirective) {
     this.activeTab = data;
+  }
+  redirectToBooking(){
+    const params = new URLSearchParams();
+    params.append('ss', this.hotel.nume);
+    console.log(this.startDate, this.endDate);
+    let startDate = this.getDateOnly(this.startDate);
+    let endDate = this.getDateOnly(this.endDate)
+
+    if(startDate && endDate){
+      params.append('checkin', startDate);
+      params.append('checkout', endDate);
+    }
+    
+    const bookingUrl = `https://www.booking.com/searchresults.html?${params.toString()}`;
+    window.location.href = bookingUrl;  
+  }
+
+  private getDateOnly(dob: string | undefined) {
+    if (!dob) return;
+    let theDob = new Date(dob);
+    return new Date(theDob.setMinutes(theDob.getMinutes()-theDob.getTimezoneOffset()))
+      .toISOString().slice(0,10);
   }
 }

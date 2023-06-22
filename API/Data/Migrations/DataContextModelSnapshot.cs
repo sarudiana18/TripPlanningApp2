@@ -345,6 +345,9 @@ namespace API.Data.Migrations
                     b.Property<decimal>("PricePerNight")
                         .HasColumnType("decimal(18,2)");
 
+                    b.Property<decimal?>("PricePerNightCameraTripla")
+                        .HasColumnType("decimal(18,2)");
+
                     b.Property<decimal>("Rating")
                         .HasColumnType("decimal(18,2)");
 
@@ -355,6 +358,33 @@ namespace API.Data.Migrations
                     b.ToTable("Hoteluri");
                 });
 
+            modelBuilder.Entity("API.Entities.Parc", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Adresa")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("CityId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Nume")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<decimal>("Rating")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CityId");
+
+                    b.ToTable("Parcuri");
+                });
+
             modelBuilder.Entity("API.Entities.Photo", b =>
                 {
                     b.Property<int>("Id")
@@ -363,7 +393,7 @@ namespace API.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("AppUserId")
+                    b.Property<int?>("AppUserId")
                         .HasColumnType("int");
 
                     b.Property<int?>("AtractieTuristicaId")
@@ -375,8 +405,14 @@ namespace API.Data.Migrations
                     b.Property<bool>("IsMain")
                         .HasColumnType("bit");
 
+                    b.Property<int?>("ParcId")
+                        .HasColumnType("int");
+
                     b.Property<string>("PublicId")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("RestaurantId")
+                        .HasColumnType("int");
 
                     b.Property<string>("Url")
                         .HasColumnType("nvarchar(max)");
@@ -389,7 +425,41 @@ namespace API.Data.Migrations
 
                     b.HasIndex("HotelId");
 
+                    b.HasIndex("ParcId");
+
+                    b.HasIndex("RestaurantId");
+
                     b.ToTable("Photos");
+                });
+
+            modelBuilder.Entity("API.Entities.Restaurant", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Adresa")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("CityId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Nume")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<decimal>("Rating")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<string>("Specific")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CityId");
+
+                    b.ToTable("Restaurante");
                 });
 
             modelBuilder.Entity("API.Entities.Review", b =>
@@ -409,17 +479,30 @@ namespace API.Data.Migrations
                     b.Property<string>("DescriereReview")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("HotelId")
+                    b.Property<int?>("HotelId")
                         .HasColumnType("int");
 
                     b.Property<decimal>("Nota")
                         .HasColumnType("decimal(18,2)");
+
+                    b.Property<int?>("ParcId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("RestaurantId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Titlu")
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
                     b.HasIndex("CreatedBy");
 
                     b.HasIndex("HotelId");
+
+                    b.HasIndex("ParcId");
+
+                    b.HasIndex("RestaurantId");
 
                     b.ToTable("Reviews");
                 });
@@ -633,23 +716,59 @@ namespace API.Data.Migrations
                     b.Navigation("City");
                 });
 
+            modelBuilder.Entity("API.Entities.Parc", b =>
+                {
+                    b.HasOne("API.Entities.City", "City")
+                        .WithMany()
+                        .HasForeignKey("CityId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("City");
+                });
+
             modelBuilder.Entity("API.Entities.Photo", b =>
                 {
                     b.HasOne("API.Entities.AppUser", "AppUser")
                         .WithMany("Photos")
-                        .HasForeignKey("AppUserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("AppUserId");
 
-                    b.HasOne("API.Entities.AtractieTuristica", null)
+                    b.HasOne("API.Entities.AtractieTuristica", "AtractieTuristica")
                         .WithMany("Photos")
                         .HasForeignKey("AtractieTuristicaId");
 
-                    b.HasOne("API.Entities.Hotel", null)
+                    b.HasOne("API.Entities.Hotel", "Hotel")
                         .WithMany("Photos")
                         .HasForeignKey("HotelId");
 
+                    b.HasOne("API.Entities.Parc", "Parc")
+                        .WithMany("Photos")
+                        .HasForeignKey("ParcId");
+
+                    b.HasOne("API.Entities.Restaurant", "Restaurant")
+                        .WithMany("Photos")
+                        .HasForeignKey("RestaurantId");
+
                     b.Navigation("AppUser");
+
+                    b.Navigation("AtractieTuristica");
+
+                    b.Navigation("Hotel");
+
+                    b.Navigation("Parc");
+
+                    b.Navigation("Restaurant");
+                });
+
+            modelBuilder.Entity("API.Entities.Restaurant", b =>
+                {
+                    b.HasOne("API.Entities.City", "City")
+                        .WithMany()
+                        .HasForeignKey("CityId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("City");
                 });
 
             modelBuilder.Entity("API.Entities.Review", b =>
@@ -662,13 +781,23 @@ namespace API.Data.Migrations
 
                     b.HasOne("API.Entities.Hotel", "Hotel")
                         .WithMany("Reviews")
-                        .HasForeignKey("HotelId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("HotelId");
+
+                    b.HasOne("API.Entities.Parc", "Parc")
+                        .WithMany("Reviews")
+                        .HasForeignKey("ParcId");
+
+                    b.HasOne("API.Entities.Restaurant", "Restaurant")
+                        .WithMany("Reviews")
+                        .HasForeignKey("RestaurantId");
 
                     b.Navigation("CreatedByUser");
 
                     b.Navigation("Hotel");
+
+                    b.Navigation("Parc");
+
+                    b.Navigation("Restaurant");
                 });
 
             modelBuilder.Entity("API.Entities.State", b =>
@@ -756,6 +885,20 @@ namespace API.Data.Migrations
                 });
 
             modelBuilder.Entity("API.Entities.Hotel", b =>
+                {
+                    b.Navigation("Photos");
+
+                    b.Navigation("Reviews");
+                });
+
+            modelBuilder.Entity("API.Entities.Parc", b =>
+                {
+                    b.Navigation("Photos");
+
+                    b.Navigation("Reviews");
+                });
+
+            modelBuilder.Entity("API.Entities.Restaurant", b =>
                 {
                     b.Navigation("Photos");
 

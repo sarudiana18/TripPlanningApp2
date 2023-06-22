@@ -10,7 +10,9 @@ namespace API.Entities
         public int Id {get; set;}
         public string Nume {get; set;}
         public string Adresa {get; set;}
-        public decimal PricePerNight{get; set;}
+        public decimal PricePerNight{get; set;} //camera dubla
+
+        public decimal? PricePerNightCameraTripla {get;set;}
         public decimal Rating{get;set;}
         public int CityId {get; set;}
         public City City {get; set; }

@@ -1,0 +1,44 @@
+<div *ngIf="restaurant.id" class="row">
+    <div class="col-4">
+        <div class="card">
+            <h4 style="margin-bottom: -20px;text-align: center;margin-top: 20px;">{{restaurant.nume}}</h4>
+            <img src="{{restaurant.photoUrl || './assets/user.png'}}" alt="{{restaurant.nume}}"
+                class="card-img-top img-thumbnail">
+            <div class="card-body">
+                <div>
+                    <strong>Locatie:</strong>
+                    <p>{{restaurant.adresa}}</p>
+                </div>
+                <div>
+                    <strong>Nota:</strong>
+                    <p>{{restaurant.rating}}</p>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="col-8">
+        <tabset class="restaurantTabs-tabset" #restaurantTabs>
+            <tab heading="Despre {{restaurant.nume}}" (selectTab)="onTabActivated($event)">
+                <h4>Adresa</h4>
+                <p>{{restaurant.adresa}}</p>
+                <h4>Nota</h4>
+                <p>{{restaurant.rating}}</p>
+                <h4>Specific:</h4>
+                <p>{{restaurant.specific}}</p>
+            </tab>
+            <tab heading="Imagini" (selectTab)="onTabActivated($event)">
+                <ngx-gallery [options]="galleryOptions" [images]="galleryImages" class="ngx-gallery"></ngx-gallery>
+            </tab>
+
+            <tab heading="Recenzii" (selectTab)="onTabActivated($event)" >
+                <app-restaurant-reviews *ngIf="restaurant.reviews" [reviews]="restaurant.reviews" [restaurantId]="restaurant.id"></app-restaurant-reviews>
+            </tab>
+
+            <tab *appHasRole="['Admin', 'Moderator']"  heading="Editeaza Imagini">
+                <app-photo-editor-restaurant [object]="restaurant"></app-photo-editor-restaurant>
+            </tab>
+        </tabset>
+    </div>
+</div>

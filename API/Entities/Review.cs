@@ -16,8 +16,13 @@ namespace API.Entities
         public string Titlu{get;set;}
         public DateTime? Created_At { get; set; } 
         public AppUser CreatedByUser {get; set;}
-        public int HotelId{ get; set;}
+        public int? HotelId{ get; set;}
+        public int? ParcId{ get; set;}
+        public int? RestaurantId{ get; set;}
         public int CreatedBy{get;set;}
         public Hotel Hotel {get; set;}
+        public Parc Parc {get; set;}
+        public Restaurant Restaurant {get; set;}
+
     }
 }

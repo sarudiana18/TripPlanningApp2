@@ -1,5 +1,6 @@
 <div class="card mb-4" *ngIf="atractie">
     <div class="card-img-wrapper">
+        <p>{{atractie.nume}}</p>
         <img src="{{atractie.photoUrl || './assets/user.png'}}" alt="{{atractie.nume}}" class="card-img-top">
         <ul class="list-inline atractie-icons animate text-center">
             <li class="list-inline-item">

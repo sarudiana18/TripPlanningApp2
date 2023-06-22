@@ -1,0 +1,42 @@
+<div *ngIf="parc.id" class="row">
+    <div class="col-4">
+        <div class="card">
+            <h4 style="margin-bottom: -20px;text-align: center;margin-top: 20px;">{{parc.nume}}</h4>
+            <img src="{{parc.photoUrl || './assets/user.png'}}" alt="{{parc.nume}}"
+                class="card-img-top img-thumbnail">
+            <div class="card-body">
+                <div>
+                    <strong>Locatie:</strong>
+                    <p>{{parc.adresa}}</p>
+                </div>
+                <div>
+                    <strong>Nota:</strong>
+                    <p>{{parc.rating}}</p>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="col-8">
+        <tabset class="parcTabs-tabset" #parcTabs>
+            <tab heading="Despre {{parc.nume}}" (selectTab)="onTabActivated($event)">
+                <h4>Adresa</h4>
+                <p>{{parc.adresa}}</p>
+                <h4>Nota</h4>
+                <p>{{parc.rating}}</p>
+            </tab>
+            <tab heading="Imagini" (selectTab)="onTabActivated($event)">
+                <ngx-gallery [options]="galleryOptions" [images]="galleryImages" class="ngx-gallery"></ngx-gallery>
+            </tab>
+
+            <tab heading="Recenzii" (selectTab)="onTabActivated($event)" >
+                <app-parc-reviews *ngIf="parc.reviews" [reviews]="parc.reviews" [parcId]="parc.id"></app-parc-reviews>
+            </tab>
+
+            <tab *appHasRole="['Admin', 'Moderator']"  heading="Editeaza Imagini">
+                <app-photo-editor-parc [object]="parc"></app-photo-editor-parc>
+            </tab>
+        </tabset>
+    </div>
+</div>

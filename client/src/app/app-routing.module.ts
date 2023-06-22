@@ -15,6 +15,8 @@ import { MainTripApplicationComponent } from './mainTripApplication/mainTripAppl
 import { TripDetailsComponent } from './trip-details/trip-details.component';
 import { AtractieTuristicaDetailsComponent } from './atractie-turistica/atractie-turistica-details/atractie-turistica-details.component';
 import { HotelDetailsComponent } from './hotel/hotel-details/hotel-details.component';
+import { RestaurantDetailsComponent } from './restaurant/restaurant-details/restaurant-details.component';
+import { ParcDetailsComponent } from './parc/parc-details/parc-details.component';
 
 const routes: Routes = [
   {path: '', component: HomeComponent},
@@ -23,9 +25,11 @@ const routes: Routes = [
     canActivate: [AuthGuard],
     children: [
       {path: 'planYourTrip', component: MainTripApplicationComponent},
-      {path: 'trip-details/:sourceCityName/:destinationCityName/:destinationCityId', component: TripDetailsComponent},
+      {path: 'trip-details', component: TripDetailsComponent, data :{ id:'1', name:"Angular"}},
       {path: 'atractiiTuristice/:atractieId', component: AtractieTuristicaDetailsComponent},
-      {path: 'hoteluri/:hotelId', component: HotelDetailsComponent},
+      {path: 'hoteluri/:hotelId/:startDate/:endDate', component: HotelDetailsComponent},
+      {path: 'restaurante/:restaurantId', component: RestaurantDetailsComponent},
+      {path: 'parcuris/:parcId', component: ParcDetailsComponent},
       {path: 'members/:username', component: MemberDetailComponent, resolve: {member: MemberDetailedResolver}},
       {path: 'member/edit', component: MemberEditComponent, canDeactivate: [PreventUnsavedChangesGuard]},
       {path: 'admin', component: AdminPanelComponent, canActivate: [AdminGuard]},

@@ -57,33 +57,18 @@ namespace API.Controllers
         }
          
         [HttpPost("addAtractieTuristica")]
-        public async Task<ActionResult> AddAtractieTuristica(AtractieTuristicaDto atractieDto,  IFormFile file)
+        public async Task<ActionResult> AddAtractieTuristica(AtractieTuristicaDto atractieDto)
         {
             if (_uow.AtractieTuristicaRepository.VerificaExistentaAtractieTuristica(atractieDto.Nume, atractieDto.CityId)) return BadRequest("Atractia turistica exista deja pentru acest oras");
-            
-            var result = await _photoService.AddPhotoAsync(file);
-
-            if (result.Error != null) return BadRequest(result.Error.Message);
-
-            var photo = new Photo
-            {
-                Url = result.SecureUrl.AbsoluteUri,
-                PublicId = result.PublicId,
-                IsMain = true
-            };
 
             var atractie = _mapper.Map<AtractieTuristica>(atractieDto);
             
-            atractie.Photos.Add(photo);
-
-            _uow.AtractieTuristicaRepository.AdaugaAtractieTuristica(atractie);
-
-            if (await _uow.Complete()) 
-            {
-                return CreatedAtAction(nameof(AddAtractieTuristica), 
-                    new {numeAtractie = atractie.Nume}, _mapper.Map<PhotoDto>(photo));
+            try{
+                
+                atractie = await  _uow.AtractieTuristicaRepository.AdaugaAtractieTuristica(atractie);
+                return Ok(atractie);
             }
-            else{
+            catch{
                 return BadRequest("Problem adding atractie turistca");
             }
         }
@@ -116,6 +101,52 @@ namespace API.Controllers
             }
 
             return BadRequest("Problem adding photo");
+        }
+         [HttpPut("set-main-photo/{photoId}")]
+        public async Task<ActionResult> SetMainPhoto(int photoId)
+        {
+
+            var atractie = _uow.AtractieTuristicaRepository.GetAtractieByPhotoId(photoId);
+            if (atractie == null) return NotFound();
+
+            var photo = atractie.Photos.FirstOrDefault(x => x.Id == photoId);
+
+            if (photo == null) return NotFound();
+
+            if (photo.IsMain) return BadRequest("Aceasta poza este deja setata ca poza principala");
+
+            var currentMain = atractie.Photos.FirstOrDefault(x => x.IsMain);
+            if (currentMain != null) currentMain.IsMain = false;
+            photo.IsMain = true;
+
+            if (await _uow.Complete()) return NoContent();
+
+            return BadRequest("Problem setting the main photo");
+        }
+
+         [HttpDelete("delete-photo/{photoId}")]
+        public async Task<ActionResult> DeletePhoto(int photoId)
+        {
+            var atractie = _uow.AtractieTuristicaRepository.GetAtractieByPhotoId(photoId);
+            if (atractie == null) return NotFound();
+
+            var photo = atractie.Photos.FirstOrDefault(x => x.Id == photoId);
+
+            if (photo == null) return NotFound();
+
+            if (photo.IsMain) return BadRequest("Nu puteti sterge poza principala!");
+
+            if (photo.PublicId != null)
+            {
+                var result = await _photoService.DeletePhotoAsync(photo.PublicId);
+                if (result.Error != null) return BadRequest(result.Error.Message);
+            }
+
+            atractie.Photos.Remove(photo);
+
+            if (await _uow.Complete()) return Ok();
+
+            return BadRequest("Problem deleting photo");
         }
         
     }

@@ -13,6 +13,7 @@ namespace API.DTOs
         public string Adresa {get; set;}
         [Required]
         public decimal PricePerNight{get; set;}
+        public decimal PricePerNightCameraTripla{get; set;}
         public decimal Rating{get;set;}
         public int CityId {get; set;}
         public string PhotoUrl { get; set; }

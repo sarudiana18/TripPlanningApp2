@@ -4,7 +4,8 @@ namespace API.Interfaces
 {
     public interface IAtractieTuristicaRepository
     {
-        void AdaugaAtractieTuristica(AtractieTuristica atractieTuristica);
+        
+        Task<AtractieTuristica> AdaugaAtractieTuristica(AtractieTuristica atractieTuristica);
 
         void AdaugaListaAtractiiTuristice(List<AtractieTuristica> listaAtractiiTuristice);
 
@@ -14,5 +15,6 @@ namespace API.Interfaces
         Task<List<AtractieTuristica>> GetAll();
         List<AtractieTuristica> GetAllByCityId(int CityId);
         bool VerificaExistentaAtractieTuristica(string numeAtractie, int CityId);
+        AtractieTuristica GetAtractieByPhotoId(int photoId);
     }
 }

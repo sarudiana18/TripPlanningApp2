@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations.Schema;
+using API.DTOs;
 
 namespace API.Entities
 {
@@ -10,12 +11,14 @@ namespace API.Entities
         public bool IsMain { get; set; }
         public string PublicId { get; set; }
 
-        public int AppUserId { get; set; }
-        public int AtractieTuristicaId { get; set; }
-        public int HotelId { get; set; }
+        public int? AppUserId { get; set; }
+        public int? AtractieTuristicaId { get; set; }
+        public int? HotelId { get; set; }
 
         public AppUser AppUser { get; set; }
         public AtractieTuristica AtractieTuristica{get; set;}
         public Hotel Hotel {get; set;}
+        public Parc Parc {get;set;}
+        public Restaurant Restaurant {get;set;}
     }
 }

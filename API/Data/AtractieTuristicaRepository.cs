@@ -1,4 +1,5 @@
-﻿using API.Entities;
+﻿using System.Runtime.CompilerServices;
+using API.Entities;
 using API.Interfaces;
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
@@ -15,9 +16,11 @@ namespace API.Data
             _context = context;
         }
 
-        public void AdaugaAtractieTuristica(AtractieTuristica City)
+        public async Task<AtractieTuristica> AdaugaAtractieTuristica(AtractieTuristica atractie)
         {
-            _context.AtractiiTuristice.Add(City);
+           _context.AtractiiTuristice.Add(atractie);
+           await _context.SaveChangesAsync();
+           return atractie;
         }
 
         public bool VerificaExistentaAtractieTuristica(string numeAtractie, int CityId)
@@ -46,6 +49,10 @@ namespace API.Data
         public List<AtractieTuristica> GetAllByCityId(int CityId)
         {
             return _context.AtractiiTuristice.Where(x=> x.CityId == CityId).Include(p=> p.Photos).ToList();
+        }
+        public AtractieTuristica GetAtractieByPhotoId(int photoId)
+        {
+           return _context.AtractiiTuristice.Where(x=> x.Photos.Any(y=> y.Id == photoId)).Include(p=> p.Photos).FirstOrDefault();
         }
     }
 }

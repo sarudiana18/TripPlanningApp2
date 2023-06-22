@@ -1,3 +1,5 @@
+import { City } from "./city";
+
 export interface User {
     username: string;
     token: string;
@@ -5,4 +7,6 @@ export interface User {
     firstName: string;
     lastName: string;
     roles: string[];
+    
+    numeOrasCurent: string;
 }

@@ -12,7 +12,8 @@ import { City } from '../_models/city';
 import { AtractieTuristica } from '../_models/atractieturistica';
 import { Hotel } from '../_models/hotel';
 import { Review } from '../_models/review';
-import axios from 'axios';
+import { Parc } from '../_models/parc';
+import { Restaurant } from '../_models/restaurant';
 
 @Injectable({
   providedIn: 'root'
@@ -45,6 +46,13 @@ export class TripPlanningService {
   }
   getCities(stateId: number) {
     return this.http.get<City[]>(this.baseUrl + 'cities/getCitiesByStateId/'+ stateId).pipe(
+      map(response => {
+        return response;
+      })
+    )
+  }
+  getCitiesByCountryId(countryId: number) {
+    return this.http.get<City[]>(this.baseUrl + 'cities/getCitiesByCountryId/'+ countryId).pipe(
       map(response => {
         return response;
       })
@@ -83,14 +91,20 @@ export class TripPlanningService {
       })
     )
   }
-  getHoteluriByCityId(cityId: number){
-    return this.http.get<Hotel[]>(this.baseUrl + 'hoteluri/getHotelByCityId/'+cityId).pipe(
+  getParcuriByCityId(cityId: number){
+    return this.http.get<Parc[]>(this.baseUrl + 'parcuri/getParcByCityId/'+ cityId).pipe(
       map(response => {
         return response;
       })
     )
   }
-
+  getRestauranteByCityId(cityId: number){
+    return this.http.get<Restaurant[]>(this.baseUrl + 'restaurante/getRestaurantByCityId/'+ cityId).pipe(
+      map(response => {
+        return response;
+      })
+    )
+  }
   getAtractiiTuristiceByStateId(stateId: number){
     return this.http.get<AtractieTuristica[]>(this.baseUrl + 'atractiiTuristiceByStateId/'+stateId).pipe(
       map(response => {
@@ -105,6 +119,22 @@ export class TripPlanningService {
       })
     )
   }
+  getHoteluriByCityId(cityId: number){
+    return this.http.get<Hotel[]>(this.baseUrl + 'hoteluri/getHotelByCityId/'+cityId).pipe(
+      map(response => {
+        return response;
+      })
+    )
+  }
+  getHoteluriByCityIdAndByBugetAndByNoOfNightsAndByNrPersoane(cityId: number, buget:number, numarNopti:number,
+    nrPersoane: number){
+    return this.http.get<Hotel[]>(this.baseUrl + 'hoteluri/getHotelByCityIdAndBugetAndNrNoptiAndNrPersoane/'
+    +cityId+'/'+buget+'/'+numarNopti+'/'+nrPersoane).pipe(
+      map(response => {
+        return response;
+      })
+    )
+  }
   getHoteluriByStateId(stateId: number){
     return this.http.get<Hotel[]>(this.baseUrl + 'hoteluriByStateId/'+stateId).pipe(
       map(response => {
@@ -112,8 +142,46 @@ export class TripPlanningService {
       })
     )
   }
+  
+  addNewHotel(model: any){
+    return this.http.post<Hotel>(this.baseUrl + 'hoteluri/addHotel', model).pipe(
+      map(hotel => {
+        return hotel;
+      })
+    )
+  }
   getReviewsByHotelId(hotelId: number){
-    return this.http.get<Review[]>(this.baseUrl + 'review/'+hotelId).pipe(
+    return this.http.get<Review[]>(this.baseUrl + 'review/getByHotelId/'+hotelId).pipe(
+      map(response => {
+        return response;
+      })
+    )
+  }
+  getParcById(id: number){
+    return this.http.get<Parc>(this.baseUrl + 'parcuri/getParcById/'+ id).pipe(
+      map(response => {
+        return response;
+      })
+    )
+  }
+  getRestaurantById(id: number){
+    return this.http.get<Restaurant>(this.baseUrl + 'restaurante/getRestaurantById/'+ id).pipe(
+      map(response => {
+        return response;
+      })
+    )
+  }
+
+ 
+  getReviewsByParcId(id: number){
+    return this.http.get<Review[]>(this.baseUrl + 'review/getByParcId/'+id).pipe(
+      map(response => {
+        return response;
+      })
+    )
+  }
+  getReviewsByRestaurantId(id: number){
+    return this.http.get<Review[]>(this.baseUrl + 'review/getByRestaurantId/'+id).pipe(
       map(response => {
         return response;
       })
@@ -142,11 +210,25 @@ export class TripPlanningService {
     //   })
   }
 
-  addNewHotel(model: any){
-    return this.http.post<Hotel>(this.baseUrl + 'hoteluri/addHotel', model).pipe(
-      map(hotel => {
-        if (hotel) {
-        }
+  addNewRecenzie(model: any){
+    return this.http.post<Review>(this.baseUrl + 'review/addReview', model).pipe(
+      map(response => {
+        return response;
+      })
+    )
+  }
+
+  addNewRestaurant(model: any){
+    return this.http.post<Restaurant>(this.baseUrl + 'restaurante/addRestaurant', model).pipe(
+      map(response => {
+        return response;
+      })
+    )
+  }
+  addNewParc(model: any){
+    return this.http.post<Parc>(this.baseUrl + 'parcuri/addParc', model).pipe(
+      map(response => {
+        return response;
       })
     )
   }
@@ -154,9 +236,16 @@ export class TripPlanningService {
   addNewAtractieTuristica(model: any){
     return this.http.post<AtractieTuristica>(this.baseUrl + 'atractiiTuristice/addAtractieTuristica/', model).pipe(
       map(atractie => {
-        if (atractie) {
-        }
+        return atractie
       })
     )
   }
+  setMainPhoto(photoId: number, controllerName: string) {
+    return this.http.put(this.baseUrl + controllerName+ '/set-main-photo/' + photoId, {});
+  }
+
+  deletePhoto(photoId: number, controllerName: string) {
+    return this.http.delete(this.baseUrl + controllerName +'/delete-photo/' + photoId);
+  }
+  
 }
