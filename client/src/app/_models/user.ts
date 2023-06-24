@@ -1,4 +1,5 @@
 import { City } from "./city";
+import { Country } from "./country";
 
 export interface User {
     username: string;
@@ -10,4 +11,7 @@ export interface User {
     
     numeOrasCurent: string;
     oras: City;
+    countryNume: string;
+    country: Country
+    id: number;
 }

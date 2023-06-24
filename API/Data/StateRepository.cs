@@ -1,6 +1,7 @@
 ﻿using API.Entities;
 using API.Interfaces;
 using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 
 namespace API.Data
 {
@@ -40,7 +41,11 @@ namespace API.Data
 
         public List<State> GetAllByCountryId(int countryId)
         {
-            return _context.States.Where(x=> x.Country_Id == countryId).ToList();
+            return _context.States.Where(x=> x.Country_Id == countryId).Include(x=> x.Country).ToList();
+        }
+        public State GetStateByCityId(int CityId)
+        {
+            return _context.States.Where(x=> x.Cities.Any(y=>y.Id==CityId)).FirstOrDefault();
         }
     }
 }

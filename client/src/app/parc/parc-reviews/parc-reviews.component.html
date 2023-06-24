@@ -39,11 +39,11 @@
             
             <div class="form-group">
                 <label for="rating">Nota</label>
-                <p-rating [(ngModel)]="newReview.nota" [stars]="10"></p-rating>
+                <p-rating [(ngModel)]="newReview.nota" [stars]="10" required></p-rating>
             </div>
     
             
-            <button type="submit" class="btn btn-primary">Posteaza recenzia</button>
+            <button [disabled]="newReview.titlu==''||newReview.titlu==null||newReview.nota==null" class="btn btn-success me-2" style="background-color: crimson;" type="submit">Posteaza recenzia</button>
           </form>
     </div>
 </p-dialog>

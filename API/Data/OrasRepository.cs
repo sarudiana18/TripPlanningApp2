@@ -1,6 +1,7 @@
 ﻿using API.Entities;
 using API.Interfaces;
 using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 
 namespace API.Data
 {
@@ -39,11 +40,11 @@ namespace API.Data
         }
         public List<City> GetAllByCountryId(int countryId)
         {
-            return _context.Cities.Where(x=> x.Country_Id == countryId).ToList();
+            return _context.Cities.Where(x=> x.Country_Id == countryId).Include(x=> x.State).ToList();
         }
         public List<City> GetAllByStateId(int stateId)
         {
-            return _context.Cities.Where(x=> x.State_Id == stateId).ToList();
+            return _context.Cities.Where(x=> x.State_Id == stateId).Include(x=> x.State).Include(x=> x.Country).ToList();
         }
     }
 }

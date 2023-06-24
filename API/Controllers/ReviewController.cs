@@ -65,18 +65,23 @@ namespace API.Controllers
         [HttpPost("addReview")]
         public async Task<ActionResult> AddReview(ReviewDto reviewDto)
         {  
-            var hotel = _uow.HotelRepository.GetHotel(reviewDto.HotelId);
-            if(hotel == null){
-                return BadRequest("Hotelul cu id-ul "+reviewDto.HotelId.ToString()+ ", trimis in request, nu a fost gasit in bd");
-            }
-          
             var review = _mapper.Map<Review>(reviewDto);
             
             _uow.ReviewsRepository.AdaugaReview(review);
 
             //update nota hotel
-            hotel.Rating = Queryable.Average((IQueryable<decimal>)hotel.Reviews.Select(x=> x.Nota));
-            _uow.HotelRepository.UpdateHotel(hotel);
+            if(reviewDto.HotelId.HasValue && reviewDto.HotelId.Value > 0){
+
+                var hotel = _uow.HotelRepository.GetHotel(reviewDto.HotelId.Value);
+                if(hotel == null){
+                    return BadRequest("Hotelul cu id-ul "+reviewDto.HotelId.ToString()+ ", trimis in request, nu a fost gasit in bd");
+                }
+
+                hotel.Rating = Queryable.Average((IQueryable<decimal>)hotel.Reviews.Select(x=> x.Nota));
+                _uow.HotelRepository.UpdateHotel(hotel);
+          
+            }
+            
 
             if (await _uow.Complete()) 
             {

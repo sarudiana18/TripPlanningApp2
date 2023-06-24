@@ -8,8 +8,9 @@
         bsDatepicker
         [bsConfig]="bsConfig"
         [maxDate]="maxDate"
+        [minDate]="minDate"
     >
     <div *ngIf="control.errors?.['required']" class="invalid-feedback">
-        {{label}} is required
+        {{label}} este obligatorie
     </div>
 </div>

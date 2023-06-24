@@ -1,4 +1,7 @@
+import { City } from "./city";
+import { Country } from "./country";
 import { Photo } from "./photo";
+import { State } from "./state";
 
 export interface Member {
     id: number;
@@ -9,7 +12,10 @@ export interface Member {
     created: Date;
     lastActive: Date;
     firstName: string;
-    city: string;
-    country: string;
+    cityNume: string;
+    city:City;
+    country: Country;
+    state: State;
+    countryNume: string;
     photos: Photo[];
 }

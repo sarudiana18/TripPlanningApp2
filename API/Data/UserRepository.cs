@@ -20,10 +20,15 @@ namespace API.Data
 
         public async Task<MemberDto> GetMemberAsync(string username)
         {
-            return await _context.Users
-                .Where(x => x.UserName == username)
-                .ProjectTo<MemberDto>(_mapper.ConfigurationProvider)
-                .SingleOrDefaultAsync();
+            var user =  await _context.Users.Where(x => x.UserName == username)
+            .Include(x=> x.City).ThenInclude(y=> y.Country)
+            .Include(x=> x.City).ThenInclude(x=> x.State)
+            .Include(x=> x.Photos)
+            .SingleOrDefaultAsync();
+            var member =  _mapper.Map<MemberDto>(user);
+            member.Country = user.City.Country;
+            member.State = user.City.State;
+            return member;
         }
         
         public async Task<AppUser> GetUserByIdAsync(int id)
@@ -47,7 +52,7 @@ namespace API.Data
 
         public void Update(AppUser user)
         {
-            _context.Entry(user).State = EntityState.Modified;
+            _context.Users.Update(user);
         }
     }
 }

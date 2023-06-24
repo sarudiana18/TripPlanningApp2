@@ -41,6 +41,12 @@ namespace API.Controllers
             if (user == null) return NotFound();
 
             _mapper.Map(memberUpdateDto, user);
+            user.CityId = memberUpdateDto.City.Id;
+            user.City = null;
+            user.CityNume = memberUpdateDto.City.Name;
+            user.CountryNume = memberUpdateDto.Country.Name;
+
+            _uow.UserRepository.Update(user);
 
             if (await _uow.Complete()) return NoContent();
 

@@ -12,5 +12,8 @@ namespace API.DTOs
         public string LastName { get; set; }
         public string NumeOrasCurent { get; set; }
         public City  Oras {get; set;}
+        public Country  Country {get; set;}
+        public string CountryNume { get; set; }
+        public int Id{get;set;}
     }
 }

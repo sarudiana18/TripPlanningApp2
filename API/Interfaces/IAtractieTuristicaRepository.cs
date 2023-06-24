@@ -1,4 +1,6 @@
+using API.DTOs;
 using API.Entities;
+using API.Helpers;
 
 namespace API.Interfaces
 {
@@ -16,5 +18,8 @@ namespace API.Interfaces
         List<AtractieTuristica> GetAllByCityId(int CityId);
         bool VerificaExistentaAtractieTuristica(string numeAtractie, int CityId);
         AtractieTuristica GetAtractieByPhotoId(int photoId);
+        Task<PagedList<AtractieTuristicaDto>> GetAtractiiAsync(AtractieTuristicaFilterDto atractieParams);
+        void Delete(AtractieTuristica atractieTuristica);
+
     }
 }

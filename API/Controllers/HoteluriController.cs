@@ -7,6 +7,8 @@ using System.Text.Json;
 using System.Runtime.CompilerServices;
 using API.DTOs;
 using AutoMapper;
+using API.Helpers;
+using API.Extensions;
 
 namespace API.Controllers
 {
@@ -23,6 +25,18 @@ namespace API.Controllers
         }
 
         [HttpGet]
+        public async Task<ActionResult<PagedList<HotelDto>>> GetHotels([FromQuery]HotelFilterDto hotelParams)
+        {
+            
+            var hotels = await _uow.HotelRepository.GetHotelsAsync(hotelParams);
+
+            Response.AddPaginationHeader(new PaginationHeader(hotels.CurrentPage, hotels.PageSize, 
+                hotels.TotalCount, hotels.TotalPages));
+
+            return Ok(hotels);
+        }
+
+        [HttpGet("getAllHotels")]
         public async Task<ActionResult<List<Hotel>>> GetAllHoteluri()
         {
             List<Hotel> listaHoteluri = new List<Hotel>();
@@ -155,6 +169,19 @@ namespace API.Controllers
             }
 
             hotel.Photos.Remove(photo);
+
+            if (await _uow.Complete()) return Ok();
+
+            return BadRequest("Problem deleting photo");
+        }
+
+        [HttpDelete("{objectId}")]
+        public async Task<ActionResult> Delete(int objectId)
+        {
+            var hotel = _uow.HotelRepository.GetHotel(objectId);
+            if (hotel == null) return NotFound();
+
+            _uow.HotelRepository.Delete(hotel);
 
             if (await _uow.Complete()) return Ok();
 

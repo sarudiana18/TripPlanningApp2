@@ -18,7 +18,7 @@ namespace API.Entities
         public DateTime Updated_At { get; set; }
         public bool Flag { get; set; }
         public string WikiDataId { get; set; }
-        public ICollection<City> Cities {get;set;}
+        public List<City> Cities {get;set;}
         public Country Country {get;set;}
     }
 }

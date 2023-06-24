@@ -1,6 +1,9 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { Review } from 'src/app/_models/review';
 import { TripPlanningService } from '../../_services/tripplanning.service';
+import { take } from 'rxjs';
+import { AccountService } from 'src/app/_services/account.service';
+import { User } from 'src/app/_models/user';
 
 @Component({
   selector: 'app-hotel-reviews',
@@ -23,14 +26,18 @@ export class HotelReviewsComponent implements OnInit {
     createdByNume:'',
     hotelId: this.hotelId,
   };
-  constructor(private tripPlanningService: TripPlanningService) { }
+  user: User | undefined;
 
+  constructor(private tripPlanningService: TripPlanningService, private accountService: AccountService) { 
+    this.accountService.currentUser$.pipe(take(1)).subscribe({
+      next: user => {
+        if (user) {
+          this.user = user;
+        }
+      }
+    })
+  }
   ngOnInit(): void {
-    // this.tripPlanningService.getReviewsByHotelId(this.hotelId).subscribe({
-    //   next: response => {
-    //     this.reviews = response;
-    //   }
-    // })
     if(this.reviews.length > 0){
       this.reviews.forEach(x=>{
         x.createdAtString = this.convertDateTimeToString(x.created_At)
@@ -54,20 +61,30 @@ export class HotelReviewsComponent implements OnInit {
   }
   submitReview(){
     this.newReview.created_At = new Date();
-    
+    if(this.user?.id)
+      this.newReview.createdBy = this.user.id;
+    this.newReview.hotelId = this.hotelId;
     // Add the new review to the reviews array
-    this.reviews.push(this.newReview);
+    this.tripPlanningService.addNewRecenzie(this.newReview).subscribe({
+      next: response =>{
+        // Add the new review to the reviews array
+        this.reviews.push(this.newReview);
     
-    // Clear the form fields
-    this.newReview = {
-      createdBy: 0,
-      descriereReview: '',
-      nota: 0,
-      titlu:'',
-      created_At: new Date(),
-      createdAtString:'',
-      createdByNume:'',
-      hotelId: this.hotelId,
-    }
+        this.displayForAddingNewReview = false;
+    
+        // Clear the form fields
+        this.newReview = {
+          createdBy: 0,
+          descriereReview: '',
+          nota: 0,
+          titlu:'',
+          created_At: new Date(),
+          createdAtString:'',
+          createdByNume:'',
+          hotelId: this.hotelId,
+        }
+      }
+    })
+    
   }
 }

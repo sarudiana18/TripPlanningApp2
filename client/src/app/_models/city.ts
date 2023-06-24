@@ -1,3 +1,5 @@
+import { Country } from "./country";
+
 export interface City {
   id: number;
   name: string;
@@ -11,4 +13,5 @@ export interface City {
   updated_At: Date;
   flag: boolean;
   wikiDataId: string;
+  country: Country;
 }

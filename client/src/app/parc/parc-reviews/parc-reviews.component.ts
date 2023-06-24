@@ -1,6 +1,9 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { Review } from 'src/app/_models/review';
 import { TripPlanningService } from '../../_services/tripplanning.service';
+import { take } from 'rxjs';
+import { AccountService } from 'src/app/_services/account.service';
+import { User } from 'src/app/_models/user';
 
 @Component({
   selector: 'app-parc-reviews',
@@ -23,8 +26,16 @@ export class ParcReviewsComponent implements OnInit {
     createdByNume:'',
     parcId: this.parcId,
   };
-  constructor(private tripPlanningService: TripPlanningService) { }
-
+  user: User | undefined;
+  constructor(private tripPlanningService: TripPlanningService, private accountService: AccountService) { 
+    this.accountService.currentUser$.pipe(take(1)).subscribe({
+      next: user => {
+        if (user) {
+          this.user = user;
+        }
+      }
+    })
+  }
   ngOnInit(): void {
     // this.tripPlanningService.getReviewsByParcId(this.parcId).subscribe({
     //   next: response => {
@@ -54,20 +65,28 @@ export class ParcReviewsComponent implements OnInit {
   }
   submitReview(){
     this.newReview.created_At = new Date();
+    if(this.user?.id)
+      this.newReview.createdBy = this.user.id;
+    this.newReview.parcId = this.parcId;
+    this.tripPlanningService.addNewRecenzie(this.newReview).subscribe({
+      next: response =>{
+        // Add the new review to the reviews array
+        this.reviews.push(this.newReview);
     
-    // Add the new review to the reviews array
-    this.reviews.push(this.newReview);
+        this.displayForAddingNewReview = false;
     
-    // Clear the form fields
-    this.newReview = {
-      createdBy: 0,
-      descriereReview: '',
-      nota: 0,
-      titlu:'',
-      created_At: new Date(),
-      createdAtString:'',
-      createdByNume:'',
-      parcId: this.parcId,
-    }
+        // Clear the form fields
+        this.newReview = {
+          createdBy: 0,
+          descriereReview: '',
+          nota: 0,
+          titlu:'',
+          created_At: new Date(),
+          createdAtString:'',
+          createdByNume:'',
+          parcId: this.parcId,
+        }
+      }
+    })
   }
 }

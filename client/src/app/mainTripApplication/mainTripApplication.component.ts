@@ -34,6 +34,7 @@ export class MainTripApplicationComponent implements OnInit {
 
   tripPlanningForm: FormGroup = new FormGroup({});
   maxDate: Date = new Date();
+  minDate: Date = new Date();
   validationErrors: string[] | undefined;
   user: User | undefined;
 
@@ -52,6 +53,7 @@ export class MainTripApplicationComponent implements OnInit {
   ngOnInit(): void {
     this.initializeForm();
     this.maxDate.setFullYear(this.maxDate.getFullYear() + 1);
+    this.minDate.setDate(this.minDate.getDate());
     this.loadCountries();
   }
 
@@ -73,13 +75,21 @@ export class MainTripApplicationComponent implements OnInit {
   showDropdownForSourceLocation(event?: any) {
     if (event == 'true') {
       this.plecareDinOrasulCurent = true;
-      this.tripPlanningForm.controls["sourceCountry"].setValidators([Validators.required]);
-      this.tripPlanningForm.controls["sourceState"].setValidators([Validators.required]);
+      this.tripPlanningForm.controls["sourceCountry"].setErrors(null);
+      this.tripPlanningForm.controls["sourceState"].setErrors(null);
+
+      this.tripPlanningForm.controls["sourceCountry"].removeValidators([Validators.required]);
+      this.tripPlanningForm.controls["sourceState"].removeValidators([Validators.required]);
+     
     }
     else {
       this.plecareDinOrasulCurent = false;
-      this.tripPlanningForm.controls["sourceCountry"].removeValidators([Validators.required]);
-      this.tripPlanningForm.controls["sourceState"].removeValidators([Validators.required]);
+      this.tripPlanningForm.controls["sourceCountry"].setValidators([Validators.required]);
+      this.tripPlanningForm.controls["sourceState"].setValidators([Validators.required]);
+      // this.tripPlanningForm.controls["sourceCountry"].clearValidators();
+      // this.tripPlanningForm.controls["sourceState"].clearValidators();
+      // this.tripPlanningForm.controls["sourceCity"].clearValidators();
+      
     }
   }
   ngAfterContentChecked() {
@@ -93,6 +103,7 @@ export class MainTripApplicationComponent implements OnInit {
           if (this.cities.length == 0) {
             this.showCities = false;
             this.tripPlanningForm.controls["destinationCity"].removeValidators([Validators.required]);
+            this.tripPlanningForm.controls["destinationCity"].setErrors(null);
             this.tripParams.destinationCity = {} as City;
             this.tripParams.destinationCity.name = this.tripPlanningForm.controls["destinationState"].value.name;
             this.tripParams.destinationCity.id = this.tripPlanningForm.controls["destinationState"].value.id;
@@ -116,6 +127,7 @@ export class MainTripApplicationComponent implements OnInit {
           if (this.sourceCities.length == 0) {
             this.showSourceCities = false;
             this.tripPlanningForm.controls["sourceCity"].removeValidators([Validators.required]);
+            this.tripPlanningForm.controls["sourceCity"].setErrors(null);
             this.tripParams.sourceCity = {} as City;
             this.tripParams.sourceCity.name = this.tripPlanningForm.controls["sourceState"].value.name;
             this.tripParams.sourceCity.id = this.tripPlanningForm.controls["sourceState"].value.id;
@@ -189,6 +201,7 @@ export class MainTripApplicationComponent implements OnInit {
     this.tripParams.nrNopti = this.getNumberOfNghtsBetween2Dates(this.tripParams.endDate, this.tripParams.startDate);
 
     if (this.tripParams.destinationCity.id) {
+      localStorage.setItem('tripDetailsParams', JSON.stringify(this.tripParams));
       this.router.navigateByUrl('/trip-details', { state: this.tripParams });
     }
   }

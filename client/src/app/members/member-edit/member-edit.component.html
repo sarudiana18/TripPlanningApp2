@@ -3,8 +3,8 @@
         <h1>Profilul tau</h1>
     </div>
     <div class="col-8">
-        <div class="alert alert-info pb-0" *ngIf="editForm.dirty">
-            <p><strong>Informatii: </strong>Au fost realizate modificari. Orice modificare nesalvata va fi pierduta.</p>
+        <div class="alert alert-info pb-0" *ngIf="editForm.dirty && locationChanged">
+            <p><strong>Atentie: </strong>Au fost realizate modificari. Orice modificare nesalvata va fi pierduta.</p>
         </div>
     </div>
     <div class="col-4">
@@ -14,7 +14,7 @@
             <div class="card-body">
                 <div>
                     <strong>Locatie:</strong>
-                    <p>{{member.city}}, {{member.country}}</p>
+                    <p>{{member.city?.name}}, {{member.country?.name}}</p>
                 </div>
                 <div>
                     <strong>Membru din:</strong>
@@ -22,8 +22,7 @@
                 </div>
             </div>
             <div class="card-footer">
-                <button type="submit" [disabled]="!editForm.dirty" 
-                    form="editForm" 
+                <button type="submit" [disabled]="!locationChanged" form="editForm"
                     class="btn btn-success col-12">Salveaza modificari</button>
             </div>
         </div>
@@ -32,14 +31,36 @@
 
     <div class="col-8">
         <tabset class="member-tabset">
-            <tab heading="Despre Diana Mirela{{member.lastName}}">
+            <tab heading="Despre {{member.firstName}} {{member.lastName}}">
                 <form #editForm="ngForm" id="editForm" (ngSubmit)="updateMember()">
                     <h4 class="mt-2">Detalii locatie: </h4>
-                    <div class="d-flex flex-row align-items-center">
-                        <label for="city">Oras: </label>
-                        <input type="text" [(ngModel)]="member.city" name="city" class="form-control mx-2">
-                        <label for="country">Tara: </label>
-                        <input type="text" [(ngModel)]="member.country" name="country" class="form-control mx-2">
+                    <div class="d-flex flex-row align-items-center" style="justify-content: space-around; width: 100%;">
+                        <div>
+                            <label for="country">Tara: </label>
+                            <p-dropdown name="country" class="form-control" [options]="countries" [(ngModel)]="member.country" optionLabel="name"
+                                [filter]="true" filterBy="name" [showClear]="true" placeholder="Tara curenta"
+                                (onChange)="loadStates(); locationHasChanged()" [ngModelOptions]="{standalone:true}"
+                                [style]="{'margin-left': '2%'}">
+                            </p-dropdown>
+
+                        </div>
+                        <div>
+                            <label for="state">Judet/Oras: </label>
+                            <p-dropdown name="state" class="form-control" [options]="states" [(ngModel)]="member.state" optionLabel="name" [filter]="true"
+                                filterBy="name" [showClear]="true" placeholder="Judetul/orasul curent"
+                                [style]="{'margin-left': '2%'}"
+                                (onChange)="loadCities();locationHasChanged()">
+                            </p-dropdown>
+                        </div>
+
+                        <div *ngIf="showCities">
+                            <label for="city">Oras/Sector: </label>
+                            <p-dropdown name="city" class="form-control" [options]="cities" [(ngModel)]="member.city" optionLabel="name" [filter]="true"
+                                filterBy="name" [showClear]="true" placeholder="Orasul/Sectorul curent"
+                                [ngModelOptions]="{standalone:true}" [style]="{'margin-left': '2%'}"
+                                (onChange)="locationHasChanged()">
+                            </p-dropdown>
+                        </div>
                     </div>
                 </form>
 

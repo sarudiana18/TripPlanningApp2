@@ -33,6 +33,10 @@ namespace API.Data
         {
            return _context.Countries.FirstOrDefault(x=> x.Name == Country.Name);
         }
+        public Country GetCountryByNume(string nume)
+        {
+           return _context.Countries.FirstOrDefault(x=> x.Name == nume);
+        }
         public List<Country> GetAll()
         {
             return _context.Countries.ToList();

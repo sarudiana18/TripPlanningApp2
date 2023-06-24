@@ -1,3 +1,29 @@
+<div class="d-flex flex-row align-items-center" style="justify-content: space-around; width: 100%;">
+    <div>
+        <label for="country">Tara: </label>
+        <p-dropdown name="country" class="form-control" [options]="countries"
+            [(ngModel)]="tripParams.destinationCountry" optionLabel="name" [filter]="true" filterBy="name"
+            [showClear]="true" placeholder="Tara curenta" (onChange)="loadStates();" [style]="{'margin-left': '2%'}">
+        </p-dropdown>
+
+    </div>
+    <div>
+        <label for="state">Judet/Oras: </label>
+        <p-dropdown name="state" class="form-control" [options]="states" [(ngModel)]="tripParams.destinationState"
+            optionLabel="name" [filter]="true" filterBy="name" [showClear]="true" placeholder="Judetul/orasul curent"
+            [style]="{'margin-left': '2%'}" (onChange)="loadCities();">
+        </p-dropdown>
+    </div>
+
+    <div *ngIf="showCities">
+        <label for="city">Oras/Sector: </label>
+        <p-dropdown name="city" class="form-control" [options]="cities" [(ngModel)]="tripParams.destinationCity"
+            optionLabel="name" [filter]="true" filterBy="name" [showClear]="true" placeholder="Orasul/Sectorul curent"
+            [style]="{'margin-left': '2%'}" (onChange)="loadObjects()">
+        </p-dropdown>
+    </div>
+</div>
+
 <p-tabView styleClass="tabview-custom">
 
     <p-tabPanel>
@@ -7,8 +33,8 @@
         </ng-template>
         <div class="row">
             <div class="filterArea">
-                <button *appHasRole="['Admin', 'Moderator']" class="add-button" type="button"
-                    (click)="addAtractie()">Adauga atractie turistica</button>
+                <button *ngIf="tripParams.destinationCity && tripParams.destinationCity.id>0" class="add-button"
+                    type="button" (click)="addAtractie()">Adauga atractie turistica</button>
 
                 <!-- Filter Inputs -->
                 <div>
@@ -25,7 +51,7 @@
                     <div style="display: inline-flex;">
                         <input type="text" [(ngModel)]="atractiiFilter.adresa" id="adresaFiltera"
                             placeholder="Filtrati dupa adresa">
-                        <button  class="buttonSearch" (click)="getAtractiiTuristiceFiltered()"> 
+                        <button class="buttonSearch" (click)="getAtractiiTuristiceFiltered()">
                             <i class="bi bi-search" style="color: black;"></i> </button>
                     </div>
                 </div>
@@ -40,11 +66,15 @@
                     </select>
                 </div>
 
-                <button class="buttonClearFilters" (click)="clearFiltersAtractii()">Sterge toate criteriile de filtrare si sortare</button>
+                <button class="buttonClearFilters" (click)="clearFiltersAtractii()">Sterge toate criteriile de filtrare
+                    si sortare</button>
 
             </div>
             <div class="col-2" style="width: 20%;" *ngFor="let atractie of atractiiTuristice">
                 <app-atractie-turistica [atractie]="atractie"></app-atractie-turistica>
+                <button (click)="deleteObject('atractiiTuristice', atractie.id)">
+                    <i class="fa fa-trash"></i>
+                </button>
             </div>
         </div>
         <div class="d-flex justify-content-center" *ngIf="paginationAtractii">
@@ -63,15 +93,15 @@
         </ng-template>
         <div class="row">
             <div class="filterArea">
-                <button *appHasRole="['Admin', 'Moderator']" class="add-button" type="button"
-                    (click)="addHotel()">Adauga hotel</button>
+                <button *ngIf="tripParams.destinationCity && tripParams.destinationCity.id>0" class="add-button"
+                    type="button" (click)="addHotel()">Adauga hotel</button>
                 <!-- Filter Inputs -->
                 <div>
                     <label for="nameFilter">Nume:</label>
                     <div style="display: inline-flex;">
                         <input type="text" [(ngModel)]="hotelFilter.nume" id="nameFilter"
                             placeholder="Filtrati dupa nume">
-                        <button class="buttonSearch" (click)="getHotels()"> 
+                        <button class="buttonSearch" (click)="getHotels()">
                             <i class="bi bi-search" style="color: black;"></i>
                         </button>
                     </div>
@@ -82,7 +112,7 @@
                     <div style="display: inline-flex;">
                         <input type="text" [(ngModel)]="hotelFilter.adresa" id="adresaFilter"
                             placeholder="Filtrati dupa adresa">
-                        <button class="buttonSearch" (click)="getHotels()"> 
+                        <button class="buttonSearch" (click)="getHotels()">
                             <i class="bi bi-search" style="color: black;"></i>
                         </button>
                     </div>
@@ -97,19 +127,23 @@
                 <!-- Sorting Inputs -->
                 <div class="sortArea">
                     <label for="sortCriteria">Sorteaza Dupa:</label>
-                    <select class="select" id="sortCriteria" [(ngModel)]="hotelFilter.sortField" (ngModelChange)="getHotels()">
+                    <select class="select" id="sortCriteria" [(ngModel)]="hotelFilter.sortField"
+                        (ngModelChange)="getHotels()">
                         <option value="nume">Nume</option>
                         <option value="pricePerNight">Pret pe noapte</option>
                         <option value="rating">Nota</option>
                     </select>
                 </div>
 
-                <button class="buttonClearFilters" (click)="clearFiltersHotels()">Sterge toate criteriile de filtrare si sortare</button>
+                <button class="buttonClearFilters" (click)="clearFiltersHotels()">Sterge toate criteriile de filtrare si
+                    sortare</button>
 
             </div>
             <div class="col-2" style="width: 20%;" *ngFor="let hotel of hoteluri">
-                <app-hotel [hotel]="hotel" [startDate]="tripParams.startDate"
-                    [endDate]="tripParams.endDate"></app-hotel>
+                <app-hotel [hotel]="hotel"></app-hotel>
+                <button (click)="deleteObject('hoteluri', hotel.id)">
+                    <i class="fa fa-trash"></i>
+                </button>
             </div>
         </div>
         <div class="d-flex justify-content-center" *ngIf="paginationHotels">
@@ -127,8 +161,8 @@
         </ng-template>
         <div class="row">
             <div class="filterArea">
-                <button *appHasRole="['Admin', 'Moderator']" class="add-button" type="button"
-                    (click)="addRestaurant()">Adauga restaurant</button>
+                <button *ngIf="tripParams.destinationCity && tripParams.destinationCity.id>0" class="add-button"
+                    type="button" (click)="addRestaurant()">Adauga restaurant</button>
 
                 <!-- Filter Inputs -->
                 <div>
@@ -136,7 +170,7 @@
                     <div style="display: inline-flex;">
                         <input type="text" [(ngModel)]="restaurantFilter.nume" id="nameFilterr"
                             placeholder="Filtrati dupa nume">
-                        <button class="buttonSearch"  (click)="getRestaurante()">
+                        <button class="buttonSearch" (click)="getRestaurante()">
                             <i class="bi bi-search" style="color: black;"></i> </button>
                     </div>
 
@@ -146,7 +180,7 @@
                     <div style="display: inline-flex;">
                         <input type="text" [(ngModel)]="restaurantFilter.adresa" id="adresaFilterr"
                             placeholder="Filtrati dupa adresa">
-                        <button class="buttonSearch"  (click)="getRestaurante()"> 
+                        <button class="buttonSearch" (click)="getRestaurante()">
                             <i class="bi bi-search" style="color: black;"></i>
                         </button>
                     </div>
@@ -173,17 +207,21 @@
                 <!-- Sorting Inputs -->
                 <div class="sortArea">
                     <label for="sortCriteriar">Sorteaza Dupa:</label>
-                    <select  class="select" id="sortCriteriar" [(ngModel)]="restaurantFilter.sortField"
+                    <select class="select" id="sortCriteriar" [(ngModel)]="restaurantFilter.sortField"
                         (ngModelChange)="getRestaurante()">
                         <option value="nume">Nume</option>
                         <option value="rating">Nota</option>
                     </select>
                 </div>
 
-                <button class="buttonClearFilters" (click)="clearFiltersRestaurante()">Sterge toate criteriile de filtrare si sortare</button>
+                <button class="buttonClearFilters" (click)="clearFiltersRestaurante()">Sterge toate criteriile de
+                    filtrare si sortare</button>
             </div>
             <div class="col-2" style="width: 20%;" style="width: 20%;" *ngFor="let restaurant of restaurante">
                 <app-restaurant [restaurant]="restaurant"></app-restaurant>
+                <button (click)="deleteObject('restaurante', restaurant.id)">
+                    <i class="fa fa-trash"></i>
+                </button>
             </div>
         </div>
         <div class="d-flex justify-content-center" *ngIf="paginationRestaurante">
@@ -201,15 +239,17 @@
         </ng-template>
         <div class="row">
             <div class="filterArea">
-                <button *appHasRole="['Admin', 'Moderator']" class="add-button" type="button" (click)="addParc()">Adauga
+                <button *ngIf="tripParams.destinationCity && tripParams.destinationCity.id>0" class="add-button"
+                    type="button" (click)="addParc()">Adauga
                     parc</button>
 
                 <!-- Filter Inputs -->
                 <div>
                     <label for="nameFilterp">Nume:</label>
                     <div style="display: inline-flex;">
-                        <input type="text" [(ngModel)]="parcFilter.nume" id="nameFilterp" placeholder="Filtrati dupa nume">
-                        <button class="buttonSearch"  (click)="getParcuri()">
+                        <input type="text" [(ngModel)]="parcFilter.nume" id="nameFilterp"
+                            placeholder="Filtrati dupa nume">
+                        <button class="buttonSearch" (click)="getParcuri()">
                             <i class="bi bi-search" style="color: black;"></i> </button>
                     </div>
 
@@ -219,7 +259,7 @@
                     <div style="display: inline-flex;">
                         <input type="text" [(ngModel)]="parcFilter.adresa" id="adresaFilterp"
                             placeholder="Filtrati dupa adresa">
-                        <button class="buttonSearch"  (click)="getParcuri()">
+                        <button class="buttonSearch" (click)="getParcuri()">
                             <i class="bi bi-search" style="color: black;"></i> </button>
                     </div>
 
@@ -233,17 +273,22 @@
                 <!-- Sorting Inputs -->
                 <div class="sortArea">
                     <label for="sortCriteriap">Sorteaza Dupa:</label>
-                    <select  class="select" id="sortCriteriap" [(ngModel)]="parcFilter.sortField" (ngModelChange)="getParcuri()">
+                    <select class="select" id="sortCriteriap" [(ngModel)]="parcFilter.sortField"
+                        (ngModelChange)="getParcuri()">
                         <option value="nume">Nume</option>
                         <option value="rating">Nota</option>
                     </select>
                 </div>
 
-                <button class="buttonClearFilters" (click)="clearFiltersParcuri()">Sterge toate criteriile de filtrare si sortare</button>
+                <button class="buttonClearFilters" (click)="clearFiltersParcuri()">Sterge toate criteriile de filtrare
+                    si sortare</button>
 
             </div>
             <div class="col-2" style="width: 20%;" *ngFor="let parc of parcuri">
                 <app-parc [parc]="parc"></app-parc>
+                <button (click)="deleteObject('parcuri', parc.id)">
+                    <i class="fa fa-trash"></i>
+                </button>
             </div>
         </div>
         <div class="d-flex justify-content-center" *ngIf="paginationParcuri">
@@ -252,22 +297,6 @@
                 [(ngModel)]="paginationParcuri.currentPage" (pageChanged)="pageChangedParcuri($event)"
                 previousText="&lsaquo;" nextText="&rsaquo;" firstText="&laquo;" lastText="&raquo;">
             </pagination>
-        </div>
-    </p-tabPanel>
-
-    <p-tabPanel header="Rute">
-        <ng-template pTemplate="header">
-            <i class="bi bi-geo-alt-fill"></i>
-            <span>Rute</span>
-        </ng-template>
-        <div class="row">
-            <div class="map-container" *ngIf="origin && destination">
-                <!-- <agm-map style="height: 100%;" [latitude]="origin.lat" [longitude]="origin.lng" [zoom]="12">
-                    <agm-marker [latitude]="origin.lat" [longitude]="origin.lng"></agm-marker>
-                    <agm-marker [latitude]="destination.lat" [longitude]="destination.lng"></agm-marker>
-                    <agm-direction [origin]="origin" [destination]="destination"></agm-direction>
-                </agm-map> -->
-            </div>
         </div>
     </p-tabPanel>
 
@@ -283,15 +312,15 @@
 
             <div class="form-group">
                 <label for="adresa">Adresa</label>
-                <textarea style="width: 100%;" id="adresa" name="adrsea" [(ngModel)]="newHotel.adresa" required></textarea>
+                <textarea style="width: 100%;" id="adresa" name="adrsea" [(ngModel)]="newHotel.adresa"></textarea>
             </div>
 
 
             <div class="form-group">
                 <label for="pret">Pret pe noapte</label>
-                <input type="number" id="pret" name="pret" [(ngModel)]="newHotel.pricePerNight" required>
+                <input type="number" id="pret" name="pret" [(ngModel)]="newHotel.pricePerNight">
             </div>
-            <button [disabled]="newHotel.nume==''||newHotel.nume==null||newHotel.pricePerNight==0||newHotel.adresa==''||newHotel.adresa==null" class="btn btn-success me-2" style="background-color: crimson;" type="submit">Adauga hotel</button>
+            <button type="submit" class="btn btn-primary">Adauga hotel</button>
         </form>
     </div>
 </p-dialog>
@@ -313,10 +342,10 @@
 
             <div class="form-group">
                 <label for="adresa">Adresa</label>
-                <textarea style="width: 100%;" id="adresa" name="adresa" [(ngModel)]="newAtractie.adresa" required></textarea>
+                <textarea style="width: 100%;" id="adresa" name="adresa" [(ngModel)]="newAtractie.adresa"></textarea>
             </div>
 
-            <button [disabled]="newAtractie.nume==''||newAtractie.nume==null||newAtractie.adresa==''||newAtractie.adresa==null" class="btn btn-success me-2" style="background-color: crimson;" type="submit">Adauga atractie turistica</button>
+            <button type="submit" class="btn btn-primary">Adauga atractie</button>
         </form>
     </div>
 </p-dialog>
@@ -333,7 +362,7 @@
                 <label for="adresa">Adresa</label>
                 <textarea style="width: 100%;" id="adresa" name="adrsea" [(ngModel)]="newParc.adresa"></textarea>
             </div>
-            <button [disabled]="newParc.nume==''||newParc.nume==null||newParc.adresa==''||newParc.adresa==null" class="btn btn-success me-2" style="background-color: crimson;" type="submit">Adauga parc</button>
+            <button type="submit" class="btn btn-primary">Adauga parc</button>
         </form>
     </div>
 </p-dialog>
@@ -348,7 +377,7 @@
 
             <div class="form-group">
                 <label for="adresa">Adresa</label>
-                <textarea style="width: 100%;" id="adresa" name="adresa" [(ngModel)]="newRestaurant.adresa" required></textarea>
+                <textarea style="width: 100%;" id="adresa" name="adresa" [(ngModel)]="newRestaurant.adresa"></textarea>
             </div>
 
 
@@ -356,8 +385,9 @@
                 <label for="specific">Specific</label>
                 <input type="text" id="specific" name="specific" [(ngModel)]="newRestaurant.specific" required>
             </div>
-            <button [disabled]="newRestaurant.nume==''||newRestaurant.nume==null||newRestaurant.adresa==''||newRestaurant.adresa==null" class="btn btn-success me-2" style="background-color: crimson;" type="submit">Adauga restaurant</button>
+            <button type="submit" class="btn btn-primary">Adauga restaurant</button>
         </form>
     </div>
 </p-dialog>
 
+<p-confirmDialog></p-confirmDialog>

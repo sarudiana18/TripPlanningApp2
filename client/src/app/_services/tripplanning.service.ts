@@ -9,11 +9,11 @@ import { getPaginatedResult, getPaginationHeaders } from './paginationHelper';
 import { State } from '../_models/state';
 import { Country } from '../_models/country';
 import { City } from '../_models/city';
-import { AtractieTuristica } from '../_models/atractieturistica';
-import { Hotel } from '../_models/hotel';
+import { AtractieTuristica, AtractieTuristicaFilter } from '../_models/atractieturistica';
+import { Hotel, HotelFilter } from '../_models/hotel';
 import { Review } from '../_models/review';
-import { Parc } from '../_models/parc';
-import { Restaurant } from '../_models/restaurant';
+import { Parc, ParcFilter } from '../_models/parc';
+import { Restaurant, RestaurantFilter } from '../_models/restaurant';
 
 @Injectable({
   providedIn: 'root'
@@ -187,29 +187,6 @@ export class TripPlanningService {
       })
     )
   }
-
-  getDirection(from: string, to:string){
-    const url1 = 'https://maps.googleapis.com/maps/api/directions/json?origin='+from+'&destination='+to+'&key='+this.directionAPIKey;
-    const config = {
-      method: "get",
-      url: url1,
-      headers: {},
-    };
-    return new Observable<any>((observer) => {
-      this.axios(config)
-        .then(function (response: any): void {
-          observer.next(response.data);
-          // return response.data;
-        })
-        .catch(function (error: any): void {
-          observer.next(error);
-        });
-    });
-    // return this.http.get<any>('https://maps.googleapis.com/maps/api/directions/json?origin='+from+'&destination='+to+'&key='+this.directionAPIKey).subscribe(response => {
-    //     return response;
-    //   })
-  }
-
   addNewRecenzie(model: any){
     return this.http.post<Review>(this.baseUrl + 'review/addReview', model).pipe(
       map(response => {
@@ -247,5 +224,83 @@ export class TripPlanningService {
   deletePhoto(photoId: number, controllerName: string) {
     return this.http.delete(this.baseUrl + controllerName +'/delete-photo/' + photoId);
   }
+
+  getHotels(hotelParams: HotelFilter) {
+
+
+    let params = getPaginationHeaders(hotelParams.pageNumber, hotelParams.pageSize);
+
+    params = params.append('nume', hotelParams.nume?? '');
+    params = params.append('rating', hotelParams.rating?? '');
+    params = params.append('adresa', hotelParams.adresa?? '');
+    params = params.append('sortField', hotelParams.sortField?? '');
+    params = params.append('cityId', hotelParams.cityId?? 0);
+    params = params.append('buget', hotelParams.buget?? '');
+    params = params.append('nrNopti', hotelParams.nrNopti?? '');
+    params = params.append('nrPersoane', hotelParams.nrPersoane?? '');
+
+
+    return getPaginatedResult<Hotel[]>(this.baseUrl + 'hoteluri', params, this.http).pipe(
+      map(response => {
+        return response;
+      })
+    )
+  }
+  getAtractiiTuristice(atractieParams: AtractieTuristicaFilter) {
+
+
+    let params = getPaginationHeaders(atractieParams.pageNumber, atractieParams.pageSize);
+
+    params = params.append('nume', atractieParams.nume?? '');
+    params = params.append('adresa', atractieParams.adresa?? '');
+    params = params.append('sortField', atractieParams.sortField?? '');
+    params = params.append('cityId', atractieParams.cityId?? 0);
+
+
+    return getPaginatedResult<AtractieTuristica[]>(this.baseUrl + 'atractiiTuristice', params, this.http).pipe(
+      map(response => {
+        return response;
+      })
+    )
+  }
+
+  getParcuri(parcParams: ParcFilter) {
+
+
+    let params = getPaginationHeaders(parcParams.pageNumber, parcParams.pageSize);
+
+    params = params.append('nume', parcParams.nume?? '');
+    params = params.append('rating', parcParams.rating?? '');
+    params = params.append('sortField', parcParams.sortField?? '');
+    params = params.append('cityId', parcParams.cityId?? 0);
+    params = params.append('adresa', parcParams.adresa?? '');
+
+
+    return getPaginatedResult<Parc[]>(this.baseUrl + 'parcuri', params, this.http).pipe(
+      map(response => {
+        return response;
+      })
+    )
+  }
+
+  getRestaurante(restaurantParams: RestaurantFilter) {
+    let params = getPaginationHeaders(restaurantParams.pageNumber, restaurantParams.pageSize);
+
+    params = params.append('nume', restaurantParams.nume?? '');
+    params = params.append('rating', restaurantParams.rating?? '');
+    params = params.append('sortField', restaurantParams.sortField?? '');
+    params = params.append('cityId', restaurantParams.cityId?? 0);
+    params = params.append('adresa', restaurantParams.adresa?? '');
+    params = params.append('specific', restaurantParams.specific?? '');
+
+    return getPaginatedResult<Restaurant[]>(this.baseUrl + 'restaurante', params, this.http).pipe(
+      map(response => {
+        return response;
+      })
+    )
+  }
   
+  removeObject(path:string, objectId: number){
+    return this.http.delete(this.baseUrl + path +'/' + objectId);
+  }
 }

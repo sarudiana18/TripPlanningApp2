@@ -7,6 +7,8 @@ using System.Text.Json;
 using AutoMapper;
 using Azure;
 using API.DTOs;
+using API.Helpers;
+using API.Extensions;
 
 namespace API.Controllers
 {
@@ -23,6 +25,31 @@ namespace API.Controllers
         }
 
         [HttpGet]
+        public async Task<ActionResult<PagedList<ParcDto>>> GetParcuri([FromQuery]ParcFilterDto modelParams)
+        {
+            
+            var modelsDto = await _uow.ParcRepository.GetParcuriAsync(modelParams);
+
+            Response.AddPaginationHeader(new PaginationHeader(modelsDto.CurrentPage, modelsDto.PageSize, 
+                modelsDto.TotalCount, modelsDto.TotalPages));
+
+            return Ok(modelsDto);
+        }
+
+        [HttpDelete("{objectId}")]
+        public async Task<ActionResult> Delete(int objectId)
+        {
+            var parc = _uow.ParcRepository.GetParc(objectId);
+            if (parc == null) return NotFound();
+
+            _uow.ParcRepository.Delete(parc);
+
+            if (await _uow.Complete()) return Ok();
+
+            return BadRequest("Problem deleting photo");
+        }
+
+        [HttpGet("getAllParcuri")]
         public async Task<ActionResult<List<Parc>>> GetAllParcuri()
         {
             List<Parc> listaParcuri = new List<Parc>();

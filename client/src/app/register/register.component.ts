@@ -77,9 +77,7 @@ export class RegisterComponent implements OnInit {
       .toISOString().slice(0,10);
   }
   loadCities() { 
-    { if(this.registerForm.controls['country'].value){
-      console.log(this.registerForm.controls['country'].value);
-    }
+    if(this.registerForm.controls['country'].value){
       this.tripPlanningService.getCitiesByCountryId(this.registerForm.controls['country'].value.id).subscribe({
         next: response => {
           this.cities = response;

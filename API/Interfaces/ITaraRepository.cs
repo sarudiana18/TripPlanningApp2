@@ -12,5 +12,6 @@ namespace API.Interfaces
 
         Country GetCountry(Country Country);
         List<Country> GetAll();
+        Country GetCountryByNume(string nume);
     }
 }

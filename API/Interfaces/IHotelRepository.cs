@@ -1,4 +1,6 @@
+using API.DTOs;
 using API.Entities;
+using API.Helpers;
 
 namespace API.Interfaces
 {
@@ -14,9 +16,11 @@ namespace API.Interfaces
         List<Hotel> GetAll();
         List<Hotel> GetAllByCityId(int cityId);
         bool VerificaExistentaHotel(string numeHotel, int CityId);
-        public List<Hotel> GetAllByCityIdAndBugetAndNrNoptiAndNrPersoane(int cityId, int buget, int nrNopti, int nrPersoane);
+        List<Hotel> GetAllByCityIdAndBugetAndNrNoptiAndNrPersoane(int cityId, int buget, int nrNopti, int nrPersoane);
 
         Hotel GetHotelByPhotoId(int photoId);
+        Task<PagedList<HotelDto>> GetHotelsAsync(HotelFilterDto hotelParams);
+        void Delete(Hotel obiect);
     }
     
 }

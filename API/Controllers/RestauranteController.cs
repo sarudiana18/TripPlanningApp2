@@ -7,6 +7,8 @@ using System.Text.Json;
 using AutoMapper;
 using Azure;
 using API.DTOs;
+using API.Helpers;
+using API.Extensions;
 
 namespace API.Controllers
 {
@@ -22,7 +24,32 @@ namespace API.Controllers
             _photoService = photoService;
         }
 
-        [HttpGet]
+       [HttpGet]
+        public async Task<ActionResult<PagedList<RestaurantDto>>> GetRestaurante([FromQuery]RestaurantFilterDto modelParams)
+        {
+            
+            var modelsDto = await _uow.RestaurantRepository.GetRestaurantsAsync(modelParams);
+
+            Response.AddPaginationHeader(new PaginationHeader(modelsDto.CurrentPage, modelsDto.PageSize, 
+                modelsDto.TotalCount, modelsDto.TotalPages));
+
+            return Ok(modelsDto);
+        }
+
+        [HttpDelete("{objectId}")]
+        public async Task<ActionResult> Delete(int objectId)
+        {
+            var restaurant = _uow.RestaurantRepository.GetRestaurant(objectId);
+            if (restaurant == null) return NotFound();
+
+            _uow.RestaurantRepository.Delete(restaurant);
+
+            if (await _uow.Complete()) return Ok();
+
+            return BadRequest("Problem deleting photo");
+        }
+
+        [HttpGet("getAllRestaurante")]
         public async Task<ActionResult<List<Restaurant>>> GetAllRestaurante()
         {
             List<Restaurant> listaRestaurante = new List<Restaurant>();

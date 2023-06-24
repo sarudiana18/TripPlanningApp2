@@ -2,7 +2,6 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NgxGalleryOptions, NgxGalleryImage, NgxGalleryAnimation } from '@kolkov/ngx-gallery';
 import { TabDirective, TabsetComponent } from 'ngx-bootstrap/tabs';
-import { Message } from 'primeng/api';
 import { take } from 'rxjs';
 import { Hotel } from 'src/app/_models/hotel';
 import { Review } from 'src/app/_models/review';
@@ -97,7 +96,6 @@ export class HotelDetailsComponent implements OnInit {
   redirectToBooking(){
     const params = new URLSearchParams();
     params.append('ss', this.hotel.nume);
-    console.log(this.startDate, this.endDate);
     let startDate = this.getDateOnly(this.startDate);
     let endDate = this.getDateOnly(this.endDate)
 

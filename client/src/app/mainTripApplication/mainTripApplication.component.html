@@ -2,93 +2,142 @@
     <h2>Organizati-va urmatoarea calatorie completand datele de mai jos</h2>
 </div>
 <div style="background-color: aliceblue;font-size: large;font-family: cursive;">
-    <div style="width: 50%; align-items: center; float: left; display: flex; flex-wrap: wrap; justify-content: left; margin-top: 4%;">
+    <div
+        style="width: 50%; align-items: center; float: left; display: flex; flex-wrap: wrap; justify-content: left; margin-top: 4%;">
         <label class="col-form-label" style="margin-right: 10%;"> Plecati din orasul in care locuiti?</label>
         <div class="flex align-items-center" style="margin-right: 10%;">
-            <p-radioButton name="plecareDinOrasulCurent" value="true" [(ngModel)]="plecareDinOrasulCurent" inputId="value1" (ngModelChange)="showDropdownForSourceLocation($event)"></p-radioButton>
+            <p-radioButton name="plecareDinOrasulCurent" value="true" [(ngModel)]="plecareDinOrasulCurent"
+                inputId="value1" (ngModelChange)="showDropdownForSourceLocation($event)"></p-radioButton>
             <label for="value1" class="ml-2">Da</label>
         </div>
-        
+
         <div class="flex align-items-center">
-            <p-radioButton name="plecareDinOrasulCurent" value="false" [(ngModel)]="plecareDinOrasulCurent" inputId="value2" (ngModelChange)="showDropdownForSourceLocation($event)"></p-radioButton>
+            <p-radioButton name="plecareDinOrasulCurent" value="false" [(ngModel)]="plecareDinOrasulCurent"
+                inputId="value2" (ngModelChange)="showDropdownForSourceLocation($event)"></p-radioButton>
             <label for="value2" class="ml-2">Nu</label>
         </div>
     </div>
     <div>
-        <form style="display: inline-grid; justify-content: center;" [formGroup]="tripPlanningForm" (ngSubmit)="tripPlanningForm.valid && generateResponseForSelectedValues()" autocomplete="off">
-            <div class="container mt-3">
-                <div  style="vertical-align: middle;">
-                    
-                    <div *ngIf="!plecareDinOrasulCurent" style="width: 80%; align-items: center; float: left; display: flex; flex-wrap: wrap; justify-content: left; margin-top: 2%;">
-                        <label class="col-form-label" style="font-weight: bold; margin-right: 70%;">Plecare din: </label>
-                            <div class="d-flex mx-2" style="align-items: center;">
-                                <label class="col-form-label" style="margin: inherit;">Tara: </label>
-                                <p-dropdown [options]="countries" formControlName="sourceCountry" optionLabel="name"
-                                    [filter]="true" filterBy="name" [showClear]="true" placeholder="Selectati tara"
-                                    (onChange)="loadSourceStates()">
-                                </p-dropdown>
+        <form style="display: inline-grid; justify-content: center;" [formGroup]="tripPlanningForm"
+            (ngSubmit)="tripPlanningForm.valid && generateResponseForSelectedValues()" autocomplete="off">
+            <div class="container mt-3" style="max-width: 1200px;">
+                <div style="vertical-align: middle;">
+
+                    <div *ngIf="!plecareDinOrasulCurent"
+                        style="width: 115%; align-items: center; float: left; display: flex; flex-wrap: wrap; margin-top: 2%;">
+                        <label class="col-form-label" style="font-weight: bold; margin-right: 80%;">Plecare din:
+                        </label>
+                        <div class="mb-3">
+                            <label class="col-form-label" style="margin: inherit;">Tara: </label>
+                            <p-dropdown [options]="countries" formControlName="sourceCountry" optionLabel="name"
+                                [filter]="true" filterBy="name" [showClear]="true" placeholder="Selectati tara"
+                                [required]="!plecareDinOrasulCurent" (onChange)="loadSourceStates()"
+                                [class.is-invalid]="tripPlanningForm.controls['sourceCountry'].touched && tripPlanningForm.controls['sourceCountry'].invalid"
+                                class="form-control">
+                            </p-dropdown>
+                            <div class="invalid-feedback"
+                                *ngIf="tripPlanningForm.controls['sourceCountry'].errors?.['required']">
+                                Tara de plecare este obligatorie
                             </div>
-                        
-                            <div class="d-flex mx-2" style="align-items: center;">
-                                <label class="col-form-label" style="margin: inherit;">Judet/Oras: </label>
-                                <p-dropdown [options]="sourceStates" formControlName="sourceState" optionLabel="name"
-                                    [filter]="true" filterBy="name" [showClear]="true" placeholder="Selectati judetul/orasul"
-                                    (onChange)="loadSourceCities()">
-                                </p-dropdown>
+
+                        </div>
+
+                        <div class="mb-3" style="margin-left: 10%;">
+                            <label class="col-form-label" style="margin: inherit;">Judet/Oras: </label>
+                            <p-dropdown [options]="sourceStates" formControlName="sourceState" optionLabel="name"
+                                [filter]="true" filterBy="name" [showClear]="true"
+                                placeholder="Selectati judetul/orasul" [required]="!plecareDinOrasulCurent"
+                                (onChange)="loadSourceCities()"
+                                [class.is-invalid]="tripPlanningForm.controls['sourceState'].touched && tripPlanningForm.controls['sourceState'].invalid"
+                                class="form-control">
+                            </p-dropdown>
+                            <div class="invalid-feedback"
+                                *ngIf="tripPlanningForm.controls['sourceState'].errors?.['required']">
+                                Judetul/Orasul de plecare este obligatoriu
                             </div>
-                        
-                            <div class="d-flex mx-2" style="align-items: center;" *ngIf="showSourceCities">
-                                <label class="col-form-label" style="margin: inherit;">Localitate: </label>
-                                <p-dropdown [options]="sourceCities" formControlName="sourceCity" optionLabel="name"
-                                    [filter]="true" filterBy="name" [showClear]="true" placeholder="Selectati localitatea"
-                                    [required]="showSourceCities">
-                                </p-dropdown>
+                        </div>
+
+                        <div class="mb-3" style="margin-left: 10%;" *ngIf="showSourceCities">
+                            <label class="col-form-label" style="margin: inherit;">Localitate: </label>
+                            <p-dropdown [options]="sourceCities" formControlName="sourceCity" optionLabel="name"
+                                [filter]="true" filterBy="name" [showClear]="true" placeholder="Selectati localitatea"
+                                [required]="showSourceCities"
+                                [class.is-invalid]="tripPlanningForm.controls['sourceCity'].touched && tripPlanningForm.controls['sourceCity'].invalid"
+                                class="form-control">
+                            </p-dropdown>
+                            <div class="invalid-feedback"
+                                *ngIf="tripPlanningForm.controls['sourceCity'].errors?.['required']">
+                                Orasul/Sectorul de plecare este obligatoriu
                             </div>
+                        </div>
                     </div>
-                    <div style="width: 80%; align-items: center; float: left; display: flex; flex-wrap: wrap; justify-content: left; margin-top: 2%;">
-                        <label class="col-form-label" style="font-weight: bold; margin-right: 70%;">Cu destinatia in: </label>
-                    
-                        <div class="d-flex mx-2" style="align-items: center;">
+                    <div
+                        style="width: 115%; align-items: center; float: left; display: flex; flex-wrap: wrap; margin-top: 2%;">
+                        <label class="col-form-label" style="font-weight: bold; margin-right: 80%;">Cu destinatia in:
+                        </label>
+
+                        <div class="mb-3">
                             <label class="col-form-label" style="margin: inherit;">Tara: </label>
                             <p-dropdown [options]="countries" formControlName="destinationCountry" optionLabel="name"
                                 [filter]="true" filterBy="name" [showClear]="true" placeholder="Selectati tara"
-                                (onChange)="loadStates()" [required]="true">
+                                (onChange)="loadStates()" [required]="true"
+                                [class.is-invalid]="tripPlanningForm.controls['destinationCountry'].touched && tripPlanningForm.controls['destinationCountry'].invalid"
+                                class="form-control">
                             </p-dropdown>
+                            <div class="invalid-feedback"
+                                *ngIf="tripPlanningForm.controls['destinationCountry'].errors?.['required']">
+                                Tara destinatie este obligatorie
+                            </div>
                         </div>
-                        
-                        <div class="d-flex mx-2" style="align-items: center;">
+
+                        <div class="mb-3" style="margin-left: 10%;">
                             <label class="col-form-label" style="margin: inherit;">Judet/Oras: </label>
                             <p-dropdown [options]="states" formControlName="destinationState" optionLabel="name"
-                                [filter]="true" filterBy="name" [showClear]="true" placeholder="Selectati judetul/orasul"
-                                (onChange)="loadCities()" [required]="true">
+                                [filter]="true" filterBy="name" [showClear]="true"
+                                placeholder="Selectati judetul/orasul" (onChange)="loadCities()" [required]="true"
+                                [class.is-invalid]="tripPlanningForm.controls['destinationState'].touched && tripPlanningForm.controls['destinationState'].invalid"
+                                class="form-control">
                             </p-dropdown>
+                            <div class="invalid-feedback"
+                                *ngIf="tripPlanningForm.controls['destinationState'].errors?.['required']">
+                                Judetul/Orasul destinatie este obligatoriu
+                            </div>
                         </div>
-                        
-                        <div class="d-flex mx-2" style="align-items: center;" *ngIf="showCities">
+
+                        <div class="mb-3" style="margin-left: 10%;" *ngIf="showCities">
                             <label class="col-form-label" style="margin: inherit;">Localitate: </label>
-                            <p-dropdown [options]="cities"formControlName="destinationCity" optionLabel="name"
+                            <p-dropdown [options]="cities" formControlName="destinationCity" optionLabel="name"
                                 [filter]="true" filterBy="name" [showClear]="true" placeholder="Selectati localitatea"
-                                [required]="showCities">
+                                [required]="showCities"
+                                [class.is-invalid]="tripPlanningForm.controls['destinationCity'].touched && tripPlanningForm.controls['destinationCity'].invalid"
+                                class="form-control">
                             </p-dropdown>
+                            <div class="invalid-feedback"
+                                *ngIf="tripPlanningForm.controls['destinationCity'].errors?.['required']">
+                                Orasul/Sectorul destinatie este obligatoriu
+                            </div>
                         </div>
-                    </div>    
+                    </div>
                 </div>
 
-                <div style="width: 60%; align-items: center; float: left; display: flex; flex-wrap: wrap; justify-content: space-evenly; margin-top: 2%;">
-                    <app-date-picker style="width:40%" [formControl]="$any(tripPlanningForm.controls['startDate'])" 
-                    [label]="'Plecare din data'" [maxDate]="maxDate"></app-date-picker >
-                    <app-date-picker style="width:40%" [formControl]="$any(tripPlanningForm.controls['endDate'])" 
-                    [label]="'Pana la data'" [maxDate]="maxDate"></app-date-picker >
-            
+                <div style="width: 100%;">
+                    <div
+                        style="width: 100%; align-items: center; float: left; display: flex; flex-wrap: wrap; justify-content: space-evenly; margin-top: 5%;">
+                        <app-date-picker style="width:40%" [formControl]="$any(tripPlanningForm.controls['startDate'])"
+                            [label]="'Plecare din data'" [maxDate]="maxDate" [minDate]="minDate"></app-date-picker>
+                        <app-date-picker style="width:40%" [formControl]="$any(tripPlanningForm.controls['endDate'])"
+                            [label]="'Pana la data'" [maxDate]="maxDate" [minDate]="minDate"></app-date-picker>
+
+                    </div>
+
+                    <div
+                        style="width: 100%; align-items: center; float: left; display: flex; flex-wrap: wrap; justify-content: space-evenly; margin-top: 2%;">
+                        <app-text-input style="width:40%" [formControl]="$any(tripPlanningForm.controls['nrPersoane'])"
+                            [label]="'Numar persoane'" [type]="'number'"></app-text-input>
+                        <app-text-input style="width:40%" [formControl]="$any(tripPlanningForm.controls['buget'])"
+                            [label]="'Buget'" [type]="'number'"></app-text-input>
+                    </div>
                 </div>
-    
-                <div style="width: 60%; align-items: center; float: left; display: flex; flex-wrap: wrap; justify-content: space-evenly; margin-top: 2%;">
-                    <app-text-input style="width:40%" [formControl]="$any(tripPlanningForm.controls['nrPersoane'])" 
-                    [label]="'Numar persoane'" [type]="'number'"></app-text-input>
-                    <app-text-input style="width:40%" [formControl]="$any(tripPlanningForm.controls['buget'])" 
-                    [label]="'Buget'" [type]="'number'"></app-text-input>
-                </div>
-        
                 <div class="row" *ngIf="validationErrors">
                     <ul class="text-danger">
                         <li *ngFor="let error of validationErrors">
@@ -97,8 +146,9 @@
                     </ul>
                 </div>
             </div>
-            <div style="margin-left: 20%; margin-bottom: 2%;">
-                <button [disabled]="!tripPlanningForm.valid" class="btn btn-success me-2" style="background-color: crimson;" type="submit">Cautare</button>
+            <div style="display: flex; margin-top: 2%; margin-bottom: 2%; justify-content: center;">
+                <button [disabled]="!tripPlanningForm.valid" class="btn btn-success me-2"
+                    style="background-color: crimson;" type="submit">Cautare</button>
                 <button class="btn btn-default" type="button" (click)="cancel()">Anulati</button>
             </div>
         </form>

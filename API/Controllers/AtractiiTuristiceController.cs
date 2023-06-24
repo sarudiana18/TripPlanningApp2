@@ -7,6 +7,8 @@ using System.Text.Json;
 using AutoMapper;
 using Azure;
 using API.DTOs;
+using API.Helpers;
+using API.Extensions;
 
 namespace API.Controllers
 {
@@ -23,6 +25,18 @@ namespace API.Controllers
         }
 
         [HttpGet]
+        public async Task<ActionResult<PagedList<AtractieTuristicaDto>>> GetAtractii([FromQuery]AtractieTuristicaFilterDto modelParams)
+        {
+            
+            var modelsDto = await _uow.AtractieTuristicaRepository.GetAtractiiAsync(modelParams);
+
+            Response.AddPaginationHeader(new PaginationHeader(modelsDto.CurrentPage, modelsDto.PageSize, 
+                modelsDto.TotalCount, modelsDto.TotalPages));
+
+            return Ok(modelsDto);
+        }
+
+        [HttpGet("getAllAtractiiTuristice")]
         public async Task<ActionResult<List<AtractieTuristica>>> GetAllAtractiiTuristice()
         {
             List<AtractieTuristica> listaAtractiiTuristice = new List<AtractieTuristica>();
@@ -124,7 +138,7 @@ namespace API.Controllers
             return BadRequest("Problem setting the main photo");
         }
 
-         [HttpDelete("delete-photo/{photoId}")]
+        [HttpDelete("delete-photo/{photoId}")]
         public async Task<ActionResult> DeletePhoto(int photoId)
         {
             var atractie = _uow.AtractieTuristicaRepository.GetAtractieByPhotoId(photoId);
@@ -143,6 +157,19 @@ namespace API.Controllers
             }
 
             atractie.Photos.Remove(photo);
+
+            if (await _uow.Complete()) return Ok();
+
+            return BadRequest("Problem deleting photo");
+        }
+
+        [HttpDelete("{objectId}")]
+        public async Task<ActionResult> Delete(int objectId)
+        {
+            var atractie = _uow.AtractieTuristicaRepository.GetAtractieTuristica(objectId);
+            if (atractie == null) return NotFound();
+
+            _uow.AtractieTuristicaRepository.Delete(atractie);
 
             if (await _uow.Complete()) return Ok();
 

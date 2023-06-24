@@ -13,5 +13,6 @@ namespace API.Interfaces
         State GetState(State State);
         List<State> GetAll();
         List<State> GetAllByCountryId(int countryId);
+        State GetStateByCityId(int CityId);
     }
 }

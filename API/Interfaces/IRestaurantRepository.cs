@@ -1,4 +1,6 @@
+using API.DTOs;
 using API.Entities;
+using API.Helpers;
 
 namespace API.Interfaces
 {
@@ -15,6 +17,8 @@ namespace API.Interfaces
         List<Restaurant> GetAllByCityId(int cityId);
         bool VerificaExistentaRestaurant(string numeRestaurant, int CityId);
         Restaurant GetRestaurantByPhotoId(int photoId);
+        Task<PagedList<RestaurantDto>> GetRestaurantsAsync(RestaurantFilterDto restaurantParams);
+        void Delete(Restaurant obiect);
     }
     
 }

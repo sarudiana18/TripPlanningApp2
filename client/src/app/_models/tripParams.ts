@@ -4,9 +4,6 @@ import { Country } from "./country";
 import { State } from "./state";
 
 export class TripParams {
-    orderBy = 'nume';
-    pageNumber = 1;
-    pageSize = 5;
     destinationCity!: City;
     destinationState!: State;
     destinationCountry!: Country;

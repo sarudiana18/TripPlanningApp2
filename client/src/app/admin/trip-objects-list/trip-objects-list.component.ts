@@ -1,24 +1,22 @@
 import { Component, OnInit } from '@angular/core';
-import { Pagination } from '../_models/pagination';
-import { TripParams } from '../_models/tripParams';
-import { AtractieTuristica, AtractieTuristicaFilter } from '../_models/atractieturistica';
-import { Hotel, HotelFilter } from '../_models/hotel';
-import { ActivatedRoute, Router } from '@angular/router';
-import { TripPlanningService } from '../_services/tripplanning.service';
-import { Parc, ParcFilter } from '../_models/parc';
-import { Restaurant, RestaurantFilter } from '../_models/restaurant';
-import { BehaviorSubject, map } from 'rxjs';
+import { Pagination } from '../../_models/pagination';
+import { TripParams } from '../../_models/tripParams';
+import { AtractieTuristica, AtractieTuristicaFilter } from '../../_models/atractieturistica';
+import { Hotel, HotelFilter } from '../../_models/hotel';
+import { TripPlanningService } from '../../_services/tripplanning.service';
+import { Parc, ParcFilter } from '../../_models/parc';
+import { Restaurant, RestaurantFilter } from '../../_models/restaurant';
+import { City } from 'src/app/_models/city';
+import { Country } from 'src/app/_models/country';
+import { State } from 'src/app/_models/state';
 import { ConfirmationService } from 'primeng/api';
 
 @Component({
-  selector: 'app-trip-details',
-  templateUrl: './trip-details.component.html',
-  styleUrls: ['./trip-details.component.css']
+  selector: 'app-trip-objects-list',
+  templateUrl: './trip-objects-list.component.html',
+  styleUrls: ['./trip-objects-list.component.css']
 })
-export class TripDetailsComponent implements OnInit {
-
-  private currentTripDetailsParams = new BehaviorSubject<TripParams | null>(null);
-  currentTripDetails$ = this.currentTripDetailsParams.asObservable();
+export class TripObjectListComponent implements OnInit {
 
   paginationAtractii: Pagination | undefined;
   paginationHotels: Pagination | undefined;
@@ -34,9 +32,6 @@ export class TripDetailsComponent implements OnInit {
   hoteluri:Hotel[] = [];
   parcuri: Parc[] = [];
   restaurante: Restaurant[] = [];
-  origin: any;
-  cityIdFromParams: number = 0;
-  destination: any;
   displayForAddingNewHotel: boolean = false;
   newHotel: Hotel = {
     nume: '',
@@ -73,49 +68,36 @@ export class TripDetailsComponent implements OnInit {
   restaurantFilter = new RestaurantFilter();
   parcFilter = new ParcFilter();
 
-  constructor(private route: ActivatedRoute, private tripPlanningService : TripPlanningService) { 
+  cities: City[] = [];
+  countries: Country[] = [];
+  states: State[] = [];
+  showCities: boolean = false;
+
+  constructor(private tripPlanningService : TripPlanningService, private confirmationService: ConfirmationService) { 
       
     }
 
   ngOnInit(): void {
-    this.route.paramMap
-    .pipe(map(() => window.history.state)).subscribe(res=>{
-          
-          const tripParamsString = localStorage.getItem('tripDetailsParams');
-          if(tripParamsString){
-            this.tripParams = JSON.parse(tripParamsString);
-          }
-          else{
-            this.tripParams = res;
-          }
-          this.hotelFilter.buget = this.tripParams.buget;
-          this.hotelFilter.nrNopti = this.tripParams.nrNopti;
-          this.hotelFilter.nrPersoane = this.tripParams.nrPersoane;
-          this.hotelFilter.cityId = this.tripParams.destinationCity.id;
-          this.atractiiFilter.cityId = this.tripParams.destinationCity.id;
-          this.parcFilter.cityId  = this.tripParams.destinationCity.id;
-          this.restaurantFilter.cityId = this.tripParams.destinationCity.id;
-          
-          if( this.tripParams.destinationCity.id){
-            this.cityIdFromParams =  this.tripParams.destinationCity.id;
-            
-            this.getAtractiiTuristiceFiltered();
-            this.getHotels();
-            this.getRestaurante();
-            this.getParcuri();
-          } 
-          if(this.tripParams.sourceCity && this.tripParams.destinationCity){
-            this.origin = { lat: parseFloat(this.tripParams.sourceCity.latitude.toString()), lng: parseFloat(this.tripParams.sourceCity.longitude.toString()) };
-            this.destination = { lat: parseFloat(this.tripParams.destinationCity.latitude.toString()), lng: parseFloat(this.tripParams.destinationCity.longitude.toString()) };
-          } 
-        });
-
+      this.loadObjects();
+      this.loadCountries();
+  }
+  loadObjects(){
+    if(this.tripParams.destinationCity?.id){
+      this.atractiiFilter.cityId = this.tripParams.destinationCity.id;
+      this.hotelFilter.cityId = this.tripParams.destinationCity.id;
+      this.restaurantFilter.cityId = this.tripParams.destinationCity.id;
+      this.parcFilter.cityId = this.tripParams.destinationCity.id;
+    }
+    this.getAtractiiTuristiceFiltered();
+    this.getHotels();
+    this.getRestaurante();
+    this.getParcuri();
   }
   addAtractie(){
     this.displayForAddingNewAttraction = true;
   }
   submitAtractieTuristica(){
-    this.newAtractie.cityId = this.cityIdFromParams;
+    this.newAtractie.cityId = this.tripParams.destinationCity.id;
     
     // Add the new review to the reviews array
     this.tripPlanningService.addNewAtractieTuristica(this.newAtractie).subscribe({
@@ -138,7 +120,7 @@ export class TripDetailsComponent implements OnInit {
     this.displayForAddingNewHotel = true;
   }
   submitHotel(){
-    this.newHotel.cityId = this.cityIdFromParams;
+    this.newHotel.cityId = this.tripParams.destinationCity.id;
     
     // Add the new review to the reviews array
 
@@ -166,7 +148,7 @@ export class TripDetailsComponent implements OnInit {
     this.displayForAddingNewParc = true;
   }
   submitParc(){
-    this.newParc.cityId= this.cityIdFromParams;
+    this.newParc.cityId= this.tripParams.destinationCity.id;
     
     // Add the new review to the reviews array
     this.tripPlanningService.addNewParc(this.newParc).subscribe({
@@ -189,7 +171,7 @@ export class TripDetailsComponent implements OnInit {
     this.displayForAddingNewRestaurant = true;
   }
   submitRestaurant(){
-    this.newRestaurant.cityId = this.cityIdFromParams;
+    this.newRestaurant.cityId = this.tripParams.destinationCity.id;
     
     // Add the new review to the reviews array
     this.tripPlanningService.addNewRestaurant(this.newRestaurant).subscribe({
@@ -221,10 +203,9 @@ export class TripDetailsComponent implements OnInit {
   }
   clearFiltersHotels(){
     this.hotelFilter = new HotelFilter();
-    this.hotelFilter.buget = this.tripParams.buget;
-    this.hotelFilter.nrNopti = this.tripParams.nrNopti;
-    this.hotelFilter.nrPersoane = this.tripParams.nrPersoane;
-    this.hotelFilter.cityId = this.tripParams.destinationCity.id;
+    if(this.tripParams.destinationCity?.id){
+      this.hotelFilter.cityId = this.tripParams.destinationCity.id;
+    }
     this.getHotels();
   }
   pageChangedHotels(event: any) {
@@ -245,7 +226,9 @@ export class TripDetailsComponent implements OnInit {
   }
   clearFiltersAtractii(){
     this.atractiiFilter = new AtractieTuristicaFilter();
-    this.atractiiFilter.cityId = this.tripParams.destinationCity.id;
+    if(this.tripParams.destinationCity?.id){
+      this.atractiiFilter.cityId = this.tripParams.destinationCity.id;
+    }    
     this.getAtractiiTuristiceFiltered();
   }
 
@@ -268,7 +251,9 @@ export class TripDetailsComponent implements OnInit {
   }
   clearFiltersRestaurante(){
     this.restaurantFilter = new RestaurantFilter();
-    this.restaurantFilter.cityId = this.tripParams.destinationCity.id;
+    if(this.tripParams.destinationCity?.id){
+      this.restaurantFilter.cityId = this.tripParams.destinationCity.id;
+    } 
     this.getRestaurante();
   }
 
@@ -290,7 +275,9 @@ export class TripDetailsComponent implements OnInit {
   }
   clearFiltersParcuri(){
     this.parcFilter = new HotelFilter();
-    this.parcFilter.cityId = this.tripParams.destinationCity.id;
+    if(this.tripParams.destinationCity?.id){
+      this.parcFilter.cityId = this.tripParams.destinationCity.id;
+    }
     this.getParcuri();
   }
   pageChangedParcuri(event: any) {
@@ -298,5 +285,74 @@ export class TripDetailsComponent implements OnInit {
       this.parcFilter.pageNumber = event.page;
       this.getParcuri();
     }
+  }
+
+  loadCountries() {
+    this.tripPlanningService.getCountries().subscribe({
+      next: response => {
+        this.countries = response;
+      }
+    })
+  }
+  loadStates() {
+    if (this.tripParams?.destinationCountry) {
+      this.tripPlanningService.getStates(this.tripParams?.destinationCountry.id).subscribe({
+        next: response => {
+          this.states = response;
+        }
+      })
+    }
+  }
+
+  loadCities() {
+    if (this.tripParams?.destinationState) {
+      this.tripPlanningService.getCities(this.tripParams.destinationState.id).subscribe({
+        next: response => {
+          this.cities = response;
+          if (this.cities.length == 0 ) {
+            this.showCities = false;
+            this.tripParams.destinationCity = {} as City;
+            this.tripParams.destinationCity.name = this.tripParams.destinationState.name;
+            this.tripParams.destinationCity.id = this.tripParams.destinationState.id;
+            this.loadObjects();
+          }
+          else {
+            this.showCities = true;
+          }
+        }
+      })
+    }
+  }
+  deleteObject(path: string, objectId: number | undefined){
+    this.confirmationService.confirm({
+      message: 'Sunteti sigur ca doriti sa stergeti acest obiect?',
+      icon: 'pi pi-exclamation-triangle',
+      accept: () => {
+        if(objectId){
+          this.tripPlanningService.removeObject(path, objectId).subscribe({
+            next: _ => {
+              if (path == 'atractiiTuristice') {
+                this.getAtractiiTuristiceFiltered();
+                // this.atractiiTuristice = this.atractiiTuristice.filter(x => x.id !== objectId);
+              }
+              else if(path == 'hoteluri'){
+                this.getHotels();
+                // this.hoteluri = this.hoteluri.filter(x => x.id !== objectId);
+              }
+              else if(path == 'restaurante'){
+                this.getRestaurante();
+                // this.restaurante = this.restaurante.filter(x => x.id !== objectId);
+              }
+              else if(path == 'parcuri'){
+    
+                this.getParcuri();
+                // this.parcuri = this.parcuri.filter(x => x.id !== objectId);
+              }
+            }
+          })
+        }
+      },
+  });
+
   }
 }

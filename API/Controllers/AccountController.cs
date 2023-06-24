@@ -11,13 +11,16 @@ namespace API.Controllers
     public class AccountController : BaseApiController
     {
         private readonly UserManager<AppUser> _userManager;
+        private readonly IUnitOfWork _uow;
         private readonly ITokenService _tokenService;
         private readonly IMapper _mapper;
-        public AccountController(UserManager<AppUser> userManager, ITokenService tokenService, IMapper mapper)
+        public AccountController(UserManager<AppUser> userManager, ITokenService tokenService, IMapper mapper,
+        IUnitOfWork uow)
         {
             _userManager = userManager;
             _mapper = mapper;
             _tokenService = tokenService;
+            _uow = uow;
         }
 
         [HttpPost("register")] // POST: api/account/register?username=dave&password=pwd
@@ -40,12 +43,15 @@ namespace API.Controllers
 
             return new UserDto
             {
+                Id = user.Id,
                 Username = user.UserName,
                 Token = await _tokenService.CreateToken(user),
                 FirstName = user.FirstName,
                 LastName = user.LastName,
                 Oras = registerDto.City,
-                NumeOrasCurent = registerDto.City.Name
+                NumeOrasCurent = registerDto.City.Name,
+                CountryNume = registerDto.Country.Name,
+                Country = registerDto.Country
             };
         }
 
@@ -54,7 +60,7 @@ namespace API.Controllers
         {
             var user = await _userManager.Users
                 .Include(p => p.Photos)
-                .Include(x => x.City)
+                .Include(x => x.City).ThenInclude(y=> y.State)
                 .SingleOrDefaultAsync(x => x.UserName == loginDto.Username);
 
             if (user == null) return Unauthorized("invalid username");
@@ -62,6 +68,8 @@ namespace API.Controllers
             var result = await _userManager.CheckPasswordAsync(user, loginDto.Password);
 
             if (!result) return Unauthorized("Invalid password");
+
+            var tara = _uow.CountryRepository.GetCountryByNume(user.CountryNume);
 
             return new UserDto
             {
@@ -71,7 +79,10 @@ namespace API.Controllers
                 FirstName = user.FirstName,
                 LastName = user.LastName,
                 Oras = user.City,
-                NumeOrasCurent = user.City.Name
+                NumeOrasCurent = user.City.Name,
+                CountryNume = user.CountryNume,
+                Country = tara,
+                Id = user.Id
             };
         }
 
