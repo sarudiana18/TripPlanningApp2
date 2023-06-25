@@ -51,7 +51,7 @@
     color: #888;
   }
   .add-button {
-    background-color: brown;
+    background-color: burlywood;
     color: white;
     border: none;
     text-align: center;
@@ -62,10 +62,7 @@
     border-radius: 4px;
     width: 15%;
   }
-  
-  .add-button:hover {
-    background-color: burlywood;
-  }
+
   .form-container {
     background-color: ghostwhite;
     width: 100%;
@@ -129,6 +126,15 @@
 
   .buttonClearFilters{
     width: 17%;
+    background-color: burlywood;
+  }
+
+  .deleteObjectButton{
+    background-color: burlywood;
+    margin-top: -10%;
+    margin-bottom: 5%;
+  }
+  .btn{
     background-color: burlywood;
   }
   

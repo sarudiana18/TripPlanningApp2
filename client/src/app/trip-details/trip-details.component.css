@@ -51,7 +51,7 @@
     color: #888;
   }
   .add-button {
-    background-color: brown;
+    background-color: burlywood;
     color: white;
     border: none;
     text-align: center;
@@ -63,9 +63,6 @@
     width: 15%;
   }
   
-  .add-button:hover {
-    background-color: burlywood;
-  }
   .form-container {
     background-color: ghostwhite;
     width: 100%;

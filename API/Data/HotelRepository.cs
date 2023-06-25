@@ -65,8 +65,16 @@ namespace API.Data
                 nrCamereDuble = 1;
             }
 
-            return _context.Hoteluri.Where(x=> x.CityId == cityId && 
+            var hotels = new List<Hotel>();
+            if(buget>0){
+                hotels = _context.Hoteluri.Where(x=> x.CityId == cityId && 
             (x.PricePerNight <= buget/nrNopti/nrCamereDuble)).Include(p=> p.Photos).Include(r=> r.Reviews).ThenInclude(y=> y.CreatedByUser).ToList();
+            }
+            else{
+                hotels = _context.Hoteluri.Where(x=> x.CityId == cityId).Include(p=> p.Photos).Include(r=> r.Reviews).ThenInclude(y=> y.CreatedByUser).ToList();
+            }
+
+            return hotels;
         }
         public bool VerificaExistentaHotel(string numeHotel, int CityId)
         {
@@ -91,10 +99,10 @@ namespace API.Data
             var query = hoteluri.AsQueryable();
 
             if( !string.IsNullOrEmpty(hotelParams.Nume) && hotelParams.Nume != "null"){
-                query = query.Where(u => u.Nume.Contains(hotelParams.Nume));
+                query = query.Where(u => u.Nume.ToLower().Contains(hotelParams.Nume.ToLower()));
             }
             if( !string.IsNullOrEmpty(hotelParams.Adresa) && hotelParams.Adresa != "null"){
-                query = query.Where(u => u.Adresa.Contains(hotelParams.Adresa));
+                query = query.Where(u => u.Adresa.ToLower().Contains(hotelParams.Adresa.ToLower()));
             }
             if(hotelParams.Rating.HasValue){
                 query = query.Where(u => u.Rating >= hotelParams.Rating);

@@ -76,11 +76,11 @@ namespace API.Data
             var query = atractii.AsQueryable();
 
             if( !string.IsNullOrEmpty(atractieParams.Nume) && atractieParams.Nume != "null"){
-                query = query.Where(u => u.Nume.Contains(atractieParams.Nume));
+                query = query.Where(u => u.Nume.ToLower().Contains(atractieParams.Nume.ToLower()));
             }
 
             if( !string.IsNullOrEmpty(atractieParams.Adresa) && atractieParams.Adresa != "null"){
-                query = query.Where(u => u.Adresa.Contains(atractieParams.Adresa));
+                query = query.Where(u => u.Adresa.ToLower().Contains(atractieParams.Adresa.ToLower()));
             }
             query = atractieParams.SortField switch
             {

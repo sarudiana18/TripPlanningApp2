@@ -66,10 +66,10 @@ namespace API.Data
             var query = parcuri.AsQueryable();
 
             if( !string.IsNullOrEmpty(parcParams.Nume) && parcParams.Nume != "null"){
-                query = query.Where(u => u.Nume.Contains(parcParams.Nume));
+                query = query.Where(u => u.Nume.ToLower().Contains(parcParams.Nume.ToLower()));
             }
             if( !string.IsNullOrEmpty(parcParams.Adresa) && parcParams.Adresa != "null"){
-                query = query.Where(u => u.Adresa.Contains(parcParams.Adresa));
+                query = query.Where(u => u.Adresa.ToLower().Contains(parcParams.Adresa.ToLower()));
             }
             if(parcParams.Rating.HasValue){
                 query = query.Where(u => u.Rating >= parcParams.Rating);

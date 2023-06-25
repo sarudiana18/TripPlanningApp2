@@ -1,16 +1,22 @@
+<div style="width: 100%; margin-bottom: 1%;">
+    <p style="width: 50%; margin:auto; font-size: larger; font-family: cursive;">
+        Pentru a adauga un obiect, este necesar sa selectati orasul
+    </p>
+</div>
+
 <div class="d-flex flex-row align-items-center" style="justify-content: space-around; width: 100%;">
     <div>
         <label for="country">Tara: </label>
         <p-dropdown name="country" class="form-control" [options]="countries"
             [(ngModel)]="tripParams.destinationCountry" optionLabel="name" [filter]="true" filterBy="name"
-            [showClear]="true" placeholder="Tara curenta" (onChange)="loadStates();" [style]="{'margin-left': '2%'}">
+            [showClear]="true" placeholder="Tara" (onChange)="loadStates();" [style]="{'margin-left': '2%'}">
         </p-dropdown>
 
     </div>
     <div>
         <label for="state">Judet/Oras: </label>
         <p-dropdown name="state" class="form-control" [options]="states" [(ngModel)]="tripParams.destinationState"
-            optionLabel="name" [filter]="true" filterBy="name" [showClear]="true" placeholder="Judetul/orasul curent"
+            optionLabel="name" [filter]="true" filterBy="name" [showClear]="true" placeholder="Judetul/orasul"
             [style]="{'margin-left': '2%'}" (onChange)="loadCities();">
         </p-dropdown>
     </div>
@@ -18,7 +24,7 @@
     <div *ngIf="showCities">
         <label for="city">Oras/Sector: </label>
         <p-dropdown name="city" class="form-control" [options]="cities" [(ngModel)]="tripParams.destinationCity"
-            optionLabel="name" [filter]="true" filterBy="name" [showClear]="true" placeholder="Orasul/Sectorul curent"
+            optionLabel="name" [filter]="true" filterBy="name" [showClear]="true" placeholder="Orasul/Sectorul"
             [style]="{'margin-left': '2%'}" (onChange)="loadObjects()">
         </p-dropdown>
     </div>
@@ -72,7 +78,7 @@
             </div>
             <div class="col-2" style="width: 20%;" *ngFor="let atractie of atractiiTuristice">
                 <app-atractie-turistica [atractie]="atractie"></app-atractie-turistica>
-                <button (click)="deleteObject('atractiiTuristice', atractie.id)">
+                <button class="deleteObjectButton" (click)="deleteObject('atractiiTuristice', atractie.id)">
                     <i class="fa fa-trash"></i>
                 </button>
             </div>
@@ -141,7 +147,7 @@
             </div>
             <div class="col-2" style="width: 20%;" *ngFor="let hotel of hoteluri">
                 <app-hotel [hotel]="hotel"></app-hotel>
-                <button (click)="deleteObject('hoteluri', hotel.id)">
+                <button class="deleteObjectButton" (click)="deleteObject('hoteluri', hotel.id)">
                     <i class="fa fa-trash"></i>
                 </button>
             </div>
@@ -219,7 +225,7 @@
             </div>
             <div class="col-2" style="width: 20%;" style="width: 20%;" *ngFor="let restaurant of restaurante">
                 <app-restaurant [restaurant]="restaurant"></app-restaurant>
-                <button (click)="deleteObject('restaurante', restaurant.id)">
+                <button class="deleteObjectButton" (click)="deleteObject('restaurante', restaurant.id)">
                     <i class="fa fa-trash"></i>
                 </button>
             </div>
@@ -286,7 +292,7 @@
             </div>
             <div class="col-2" style="width: 20%;" *ngFor="let parc of parcuri">
                 <app-parc [parc]="parc"></app-parc>
-                <button (click)="deleteObject('parcuri', parc.id)">
+                <button class="deleteObjectButton" (click)="deleteObject('parcuri', parc.id)">
                     <i class="fa fa-trash"></i>
                 </button>
             </div>

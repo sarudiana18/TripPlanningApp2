@@ -42,7 +42,7 @@
     color: #888;
   }
   .add-button {
-    background-color: brown;
+    background-color: burlywood;
     color: white;
     border: none;
     padding: 10px 20px;
@@ -57,9 +57,6 @@
     float: right;
   }
   
-  .add-button:hover {
-    background-color: burlywood;
-  }
   .form-container {
     background-color: ghostwhite;
     width: 100%;
@@ -101,5 +98,8 @@
     color: #fff;
     border: none;
     border-radius: 4px;
-  }  
+  }
+  .btn{
+    background-color: burlywood;
+  } 
   

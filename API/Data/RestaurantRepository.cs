@@ -65,13 +65,13 @@ namespace API.Data
             var query = restaurante.AsQueryable();
 
             if( !string.IsNullOrEmpty(restaurantParams.Nume) && restaurantParams.Nume != "null"){
-                query = query.Where(u => u.Nume.Contains(restaurantParams.Nume));
+                query = query.Where(u => u.Nume.ToLower().Contains(restaurantParams.Nume.ToLower()));
             }
             if( !string.IsNullOrEmpty(restaurantParams.Adresa) && restaurantParams.Adresa != "null"){
-                query = query.Where(u => u.Adresa.Contains(restaurantParams.Adresa));
+                query = query.Where(u => u.Adresa.ToLower().Contains(restaurantParams.Adresa.ToLower()));
             }
             if( !string.IsNullOrEmpty(restaurantParams.Specific) && restaurantParams.Specific != "null"){
-                query = query.Where(u => u.Specific.Contains(restaurantParams.Specific));
+                query = query.Where(u => u.Specific.ToLower().Contains(restaurantParams.Specific.ToLower()));
             }
             if(restaurantParams.Rating.HasValue){
                 query = query.Where(u => u.Rating >= restaurantParams.Rating);
