@@ -17,7 +17,7 @@ export class AdminGuard implements CanActivate {
         if (user.roles.includes('Admin') || user.roles.includes('Moderator')) {
           return true;
         } else {
-          this.toastr.error('You cannot enter this area');
+          this.toastr.error('Nu aveti drepturi pentru aceasta sectiune');
           return false;
         }
       })

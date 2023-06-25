@@ -73,7 +73,7 @@ namespace API.Controllers
         [HttpPost("addAtractieTuristica")]
         public async Task<ActionResult> AddAtractieTuristica(AtractieTuristicaDto atractieDto)
         {
-            if (_uow.AtractieTuristicaRepository.VerificaExistentaAtractieTuristica(atractieDto.Nume, atractieDto.CityId)) return BadRequest("Atractia turistica exista deja pentru acest oras");
+            if (_uow.AtractieTuristicaRepository.VerificaExistentaAtractieTuristica(atractieDto.Nume, atractieDto.CityId)) return BadRequest("Atractia turistica introdusa exista deja pentru acest oras");
 
             var atractie = _mapper.Map<AtractieTuristica>(atractieDto);
             
@@ -83,7 +83,7 @@ namespace API.Controllers
                 return Ok(atractie);
             }
             catch{
-                return BadRequest("Problem adding atractie turistca");
+                return BadRequest("Eroare la adaugarea unei atractii turistice");
             }
         }
 
@@ -114,7 +114,7 @@ namespace API.Controllers
                     new {numeAtractie = atractie.Nume}, _mapper.Map<PhotoDto>(photo));
             }
 
-            return BadRequest("Problem adding photo");
+            return BadRequest("Eroare la adaugarea unei poze");
         }
          [HttpPut("set-main-photo/{photoId}")]
         public async Task<ActionResult> SetMainPhoto(int photoId)
@@ -135,7 +135,7 @@ namespace API.Controllers
 
             if (await _uow.Complete()) return NoContent();
 
-            return BadRequest("Problem setting the main photo");
+            return BadRequest("Eroare la setarea pozei ca poza principala");
         }
 
         [HttpDelete("delete-photo/{photoId}")]
@@ -160,7 +160,7 @@ namespace API.Controllers
 
             if (await _uow.Complete()) return Ok();
 
-            return BadRequest("Problem deleting photo");
+            return BadRequest("Eroare la stergerea pozei");
         }
 
         [HttpDelete("{objectId}")]
@@ -173,7 +173,7 @@ namespace API.Controllers
 
             if (await _uow.Complete()) return Ok();
 
-            return BadRequest("Problem deleting photo");
+            return BadRequest("Eroare la stergerea atractiei turistice");
         }
         
     }

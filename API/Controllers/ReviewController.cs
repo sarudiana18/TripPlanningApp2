@@ -74,7 +74,7 @@ namespace API.Controllers
 
                 var hotel = _uow.HotelRepository.GetHotel(reviewDto.HotelId.Value);
                 if(hotel == null){
-                    return BadRequest("Hotelul cu id-ul "+reviewDto.HotelId.ToString()+ ", trimis in request, nu a fost gasit in bd");
+                    return BadRequest("Hotelul cu id-ul "+reviewDto.HotelId.ToString()+ ", trimis in request, nu a fost gasit in baza de date");
                 }
 
                 hotel.Rating = Queryable.Average((IQueryable<decimal>)hotel.Reviews.Select(x=> x.Nota));
@@ -88,7 +88,7 @@ namespace API.Controllers
                 return Ok();
             }
             else{
-                return BadRequest("Problem adding atractie turistca");
+                return BadRequest("Eroare la adaugarea recenziei");
             }
         }
     }

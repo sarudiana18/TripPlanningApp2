@@ -46,7 +46,7 @@ namespace API.Controllers
 
             if (await _uow.Complete()) return Ok();
 
-            return BadRequest("Problem deleting photo");
+            return BadRequest("Eroare la stergerea restaurantului");
         }
 
         [HttpGet("getAllRestaurante")]
@@ -86,7 +86,7 @@ namespace API.Controllers
         [HttpPost("addRestaurant")]
         public async Task<ActionResult> AddRestaurant(RestaurantDto restaurantDto)
         {
-            if (_uow.RestaurantRepository.VerificaExistentaRestaurant(restaurantDto.Nume, restaurantDto.CityId)) return BadRequest("Atractia turistica exista deja pentru acest oras");
+            if (_uow.RestaurantRepository.VerificaExistentaRestaurant(restaurantDto.Nume, restaurantDto.CityId)) return BadRequest("Restaurantul introdus exista deja pentru acest oras");
 
             var restaurant = _mapper.Map<Restaurant>(restaurantDto);
             
@@ -96,7 +96,7 @@ namespace API.Controllers
                 return Ok(restaurant);
             }
             else{
-                return BadRequest("Problem adding restaurant");
+                return BadRequest("Eroare la adaugarea restaurantului");
             }
         }
 
@@ -127,7 +127,7 @@ namespace API.Controllers
                     new {numeRestaurant = restaurant.Nume}, _mapper.Map<PhotoDto>(photo));
             }
 
-            return BadRequest("Problem adding photo");
+            return BadRequest("Eroare la adaugarea pozei");
         }
         
         
@@ -150,7 +150,7 @@ namespace API.Controllers
 
             if (await _uow.Complete()) return NoContent();
 
-            return BadRequest("Problem setting the main photo");
+            return BadRequest("Eroare la setarea pozei ca poza principala");
         }
 
          [HttpDelete("delete-photo/{photoId}")]
@@ -175,7 +175,7 @@ namespace API.Controllers
 
             if (await _uow.Complete()) return Ok();
 
-            return BadRequest("Problem deleting photo");
+            return BadRequest("Eroare la stergerea pozei");
         }
     }
 }

@@ -50,7 +50,7 @@ namespace API.Controllers
 
             if (await _uow.Complete()) return NoContent();
 
-            return BadRequest("Failed to update user");
+            return BadRequest("Eroare la actualizarea utilizatorului");
         }
 
         [HttpPost("add-photo")]
@@ -79,7 +79,7 @@ namespace API.Controllers
                     new {username = user.UserName}, _mapper.Map<PhotoDto>(photo));
             }
 
-            return BadRequest("Problem adding photo");
+            return BadRequest("Eroare la adaugarea pozei");
         }
 
         [HttpPut("set-main-photo/{photoId}")]
@@ -93,7 +93,7 @@ namespace API.Controllers
 
             if (photo == null) return NotFound();
 
-            if (photo.IsMain) return BadRequest("this is already your main photo");
+            if (photo.IsMain) return BadRequest("Aceasta poza este deja poza dvs principala");
 
             var currentMain = user.Photos.FirstOrDefault(x => x.IsMain);
             if (currentMain != null) currentMain.IsMain = false;
@@ -101,7 +101,7 @@ namespace API.Controllers
 
             if (await _uow.Complete()) return NoContent();
 
-            return BadRequest("Problem setting the main photo");
+            return BadRequest("Eroare la setarea pozei ca poza principala");
         }
 
         [HttpDelete("delete-photo/{photoId}")]
@@ -113,7 +113,7 @@ namespace API.Controllers
 
             if (photo == null) return NotFound();
 
-            if (photo.IsMain) return BadRequest("You cannot delete your main photo");
+            if (photo.IsMain) return BadRequest("Nu puteti sterge poza principala");
 
             if (photo.PublicId != null)
             {
@@ -125,7 +125,7 @@ namespace API.Controllers
 
             if (await _uow.Complete()) return Ok();
 
-            return BadRequest("Problem deleting photo");
+            return BadRequest("Eroare la stergerea pozei");
         }
     }
 }

@@ -26,7 +26,7 @@ namespace API.Controllers
         [HttpPost("register")] // POST: api/account/register?username=dave&password=pwd
         public async Task<ActionResult<UserDto>> Register(RegisterDto registerDto)
         {
-            if (await UserExists(registerDto.Username)) return BadRequest("Username is taken");
+            if (await UserExists(registerDto.Username)) return BadRequest("Numele de utilizator este luat");
 
             var user = _mapper.Map<AppUser>(registerDto);
 
@@ -63,11 +63,11 @@ namespace API.Controllers
                 .Include(x => x.City).ThenInclude(y=> y.State)
                 .SingleOrDefaultAsync(x => x.UserName == loginDto.Username);
 
-            if (user == null) return Unauthorized("invalid username");
+            if (user == null) return Unauthorized("Nume de utilizator invalid");
 
             var result = await _userManager.CheckPasswordAsync(user, loginDto.Password);
 
-            if (!result) return Unauthorized("Invalid password");
+            if (!result) return Unauthorized("Parola invalida");
 
             var tara = _uow.CountryRepository.GetCountryByNume(user.CountryNume);
 

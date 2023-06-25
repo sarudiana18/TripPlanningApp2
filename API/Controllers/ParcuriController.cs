@@ -46,7 +46,7 @@ namespace API.Controllers
 
             if (await _uow.Complete()) return Ok();
 
-            return BadRequest("Problem deleting photo");
+            return BadRequest("Eroare la stergerea parcului");
         }
 
         [HttpGet("getAllParcuri")]
@@ -86,7 +86,7 @@ namespace API.Controllers
         [HttpPost("addParc")]
         public async Task<ActionResult> AddParc(ParcDto parcDto)
         {
-            if (_uow.ParcRepository.VerificaExistentaParc(parcDto.Nume, parcDto.CityId)) return BadRequest("Atractia turistica exista deja pentru acest oras");
+            if (_uow.ParcRepository.VerificaExistentaParc(parcDto.Nume, parcDto.CityId)) return BadRequest("Parcul introdus exista deja pentru acest oras");
 
             var parc = _mapper.Map<Parc>(parcDto);
             
@@ -96,7 +96,7 @@ namespace API.Controllers
                 return Ok(parc);
             }
             else{
-                return BadRequest("Problem adding hotel turistca");
+                return BadRequest("Eroare la adaugarea parcului");
             }
         }
 
@@ -127,7 +127,7 @@ namespace API.Controllers
                     new {numeParc = parc.Nume}, _mapper.Map<PhotoDto>(photo));
             }
 
-            return BadRequest("Problem adding photo");
+            return BadRequest("Eroare la adaugarea pozei");
         }
 
         
@@ -150,7 +150,7 @@ namespace API.Controllers
 
             if (await _uow.Complete()) return NoContent();
 
-            return BadRequest("Problem setting the main photo");
+            return BadRequest("Eroare la setarea pozei ca poza principala");
         }
 
          [HttpDelete("delete-photo/{photoId}")]
@@ -175,7 +175,7 @@ namespace API.Controllers
 
             if (await _uow.Complete()) return Ok();
 
-            return BadRequest("Problem deleting photo");
+            return BadRequest("Eroare la stergerea pozei");
         }
         
     }
