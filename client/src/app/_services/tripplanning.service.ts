@@ -20,7 +20,6 @@ import { Restaurant, RestaurantFilter } from '../_models/restaurant';
 })
 export class TripPlanningService {
   baseUrl = environment.apiUrl;
-  directionAPIKey = environment.DIRECTION_API_KEY;
   city: City | undefined;
   tripParams: TripParams | undefined;
   axios = require('axios');

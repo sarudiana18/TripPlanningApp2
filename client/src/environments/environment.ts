@@ -5,9 +5,7 @@
 export const environment = {
   production: false,
   apiUrl: 'https://localhost:5001/api/',
-  hubUrl: 'https://localhost:5001/hubs/',
-  DIRECTION_API_KEY:'AIzaSyB2qdNY_0dgdLFKb3jASFtiDjwPnd2R-Ug',
-  ROUTE_API_KEY:'AIzaSyB2qdNY_0dgdLFKb3jASFtiDjwPnd2R-Ug'
+  hubUrl: 'https://localhost:5001/hubs/'
 };
 
 /*
