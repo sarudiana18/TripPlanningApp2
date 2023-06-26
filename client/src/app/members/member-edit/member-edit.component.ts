@@ -77,8 +77,6 @@ export class MemberEditComponent implements OnInit {
       this.tripPlanningService.getCities(this.member.state.id).subscribe({
         next: response => {
           this.cities = response;
-          console.log(this.cities);
-          console.log(this.member?.city);
           if (this.cities.length == 0 && this.member?.city) {
             this.showCities = false;
             if(this.locationChanged){
@@ -107,8 +105,6 @@ export class MemberEditComponent implements OnInit {
       this.tripPlanningService.getStates(this.member?.country.id).subscribe({
         next: response => {
           this.states = response;
-          console.log(this.states);
-          console.log(this.member?.state);
           if(this.locationChanged && this.member?.state){
             this.member.state = {} as State;
           }

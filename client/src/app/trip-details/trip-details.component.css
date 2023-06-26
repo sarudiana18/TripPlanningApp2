@@ -61,6 +61,7 @@
     cursor: pointer;
     border-radius: 4px;
     width: 15%;
+    margin-right: 1%;
   }
   
   .form-container {
@@ -127,5 +128,6 @@
   .buttonClearFilters{
     width: 17%;
     background-color: burlywood;
+    margin-left: 1%;
   }
   

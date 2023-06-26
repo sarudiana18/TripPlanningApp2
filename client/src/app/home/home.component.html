@@ -1,5 +1,5 @@
 <div> 
-    <div class="container mt-5" >
+    <div class="container mt-5" *ngIf="!(accountService.currentUser$  | async)" >
         <div *ngIf="!registerMode" style="text-align: center;">
             <h1>Pregateste-te pentru urmatoarea ta vacanta</h1>
             <img src="./assets/download.jpg" class="img-fluid" alt="Responsive image"  style="margin-top: 10px; width: 40%;">
@@ -16,5 +16,8 @@
                 </div>
             </div>
         </div>
+    </div>
+    <div *ngIf="accountService.currentUser$  | async">
+        <app-mainTripApplication></app-mainTripApplication>
     </div>
 </div>

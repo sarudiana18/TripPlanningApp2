@@ -45,6 +45,8 @@ export class AccountService {
 
   logout() {
     localStorage.removeItem('user');
+    localStorage.removeItem('tripObjectDetailsParams');
+    localStorage.removeItem('tripDetailsParams')
     this.currentUserSource.next(null);
   }
 

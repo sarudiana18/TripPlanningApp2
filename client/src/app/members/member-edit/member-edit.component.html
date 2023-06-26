@@ -14,7 +14,7 @@
             <div class="card-body">
                 <div>
                     <strong>Locatie:</strong>
-                    <p>{{member.city?.name}}, {{member.country?.name}}</p>
+                    <p *ngIf="member.city && member.country">{{member.city.name}}, {{member.country.name}}</p>
                 </div>
                 <div>
                     <strong>Membru din:</strong>

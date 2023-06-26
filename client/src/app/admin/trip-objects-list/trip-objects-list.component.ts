@@ -82,12 +82,24 @@ export class TripObjectListComponent implements OnInit {
       this.loadCountries();
   }
   loadObjects(){
+    const tripObjectDetailsParams = localStorage.getItem('tripObjectDetailsParams');
+    if(tripObjectDetailsParams){
+      this.tripParams = JSON.parse(tripObjectDetailsParams);
+      if((this.states == null || this.states.length == 0) && this.tripParams.destinationState?.id){
+        this.loadStates();
+      }
+      if((this.cities == null || this.cities.length == 0) && this.tripParams.destinationCity?.id){
+        this.loadCities();
+      }
+    }
     if(this.tripParams.destinationCity?.id){
       this.atractiiFilter.cityId = this.tripParams.destinationCity.id;
       this.hotelFilter.cityId = this.tripParams.destinationCity.id;
       this.restaurantFilter.cityId = this.tripParams.destinationCity.id;
       this.parcFilter.cityId = this.tripParams.destinationCity.id;
+      localStorage.setItem('tripObjectDetailsParams', JSON.stringify(this.tripParams));
     }
+
     this.getAtractiiTuristiceFiltered();
     this.getHotels();
     this.getRestaurante();
