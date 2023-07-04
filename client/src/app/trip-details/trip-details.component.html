@@ -278,18 +278,23 @@
         <form *ngIf="displayForAddingNewHotel" (ngSubmit)="submitHotel()">
             <div class="form-group">
                 <label for="nume">Nume</label>
-                <input type="text" id="nume" name="nume" [(ngModel)]="newHotel.nume" required>
+                <input type="text" id="nume" name="nume" [(ngModel)]="newHotel.nume" [ngModelOptions]="{standalone: true}" required>
             </div>
 
             <div class="form-group">
                 <label for="adresa">Adresa</label>
-                <textarea style="width: 100%;" id="adresa" name="adrsea" [(ngModel)]="newHotel.adresa" required></textarea>
+                <textarea style="width: 100%;" id="adresa" name="adrsea" [(ngModel)]="newHotel.adresa" [ngModelOptions]="{standalone: true}" required></textarea>
             </div>
 
 
             <div class="form-group">
-                <label for="pret">Pret pe noapte</label>
-                <input type="number" id="pret" name="pret" [(ngModel)]="newHotel.pricePerNight" required>
+                <label for="pret">Pret pe noapte camera dubla</label>
+                <input type="number" id="pret" name="pret" [(ngModel)]="newHotel.pricePerNight" [ngModelOptions]="{standalone: true}" required>
+            </div>
+
+            <div class="form-group">
+                <label for="pret">Pret pe noapte camera tripla</label>
+                <input type="number" id="pret" name="pret" [(ngModel)]="newHotel.pricePerNightCameraTripla" [ngModelOptions]="{standalone: true}">
             </div>
             <button [disabled]="newHotel.nume==''||newHotel.nume==null||newHotel.pricePerNight==0||newHotel.adresa==''||newHotel.adresa==null" class="btn btn-success me-2" style="background-color: crimson;" type="submit">Adauga hotel</button>
         </form>
@@ -301,19 +306,19 @@
         <form *ngIf="displayForAddingNewAttraction" (ngSubmit)="submitAtractieTuristica()">
             <div class="form-group">
                 <label for="nume">Nume</label>
-                <input type="text" id="nume" name="nume" [(ngModel)]="newAtractie.nume" required>
+                <input type="text" id="nume" name="nume" [(ngModel)]="newAtractie.nume" [ngModelOptions]="{standalone: true}" required>
             </div>
 
             <div class="form-group">
                 <label for="descriere">Descriere</label>
                 <textarea style="width: 100%;" id="descriere" name="descriere"
-                    [(ngModel)]="newAtractie.descriere"></textarea>
+                    [(ngModel)]="newAtractie.descriere" [ngModelOptions]="{standalone: true}"></textarea>
             </div>
 
 
             <div class="form-group">
                 <label for="adresa">Adresa</label>
-                <textarea style="width: 100%;" id="adresa" name="adresa" [(ngModel)]="newAtractie.adresa" required></textarea>
+                <textarea style="width: 100%;" id="adresa" name="adresa" [(ngModel)]="newAtractie.adresa" [ngModelOptions]="{standalone: true}" required></textarea>
             </div>
 
             <button [disabled]="newAtractie.nume==''||newAtractie.nume==null||newAtractie.adresa==''||newAtractie.adresa==null" class="btn btn-success me-2" style="background-color: crimson;" type="submit">Adauga atractie turistica</button>
@@ -326,12 +331,12 @@
         <form *ngIf="displayForAddingNewParc" (ngSubmit)="submitParc()">
             <div class="form-group">
                 <label for="nume">Nume</label>
-                <input type="text" id="nume" name="nume" [(ngModel)]="newParc.nume" required>
+                <input type="text" id="nume" name="nume" [(ngModel)]="newParc.nume" [ngModelOptions]="{standalone: true}" required>
             </div>
 
             <div class="form-group">
                 <label for="adresa">Adresa</label>
-                <textarea style="width: 100%;" id="adresa" name="adrsea" [(ngModel)]="newParc.adresa"></textarea>
+                <textarea style="width: 100%;" id="adresa" name="adrsea" [(ngModel)]="newParc.adresa" [ngModelOptions]="{standalone: true}"></textarea>
             </div>
             <button [disabled]="newParc.nume==''||newParc.nume==null||newParc.adresa==''||newParc.adresa==null" class="btn btn-success me-2" style="background-color: crimson;" type="submit">Adauga parc</button>
         </form>
@@ -343,18 +348,18 @@
         <form *ngIf="displayForAddingNewRestaurant" (ngSubmit)="submitRestaurant()">
             <div class="form-group">
                 <label for="nume">Nume</label>
-                <input type="text" id="nume" name="nume" [(ngModel)]="newRestaurant.nume" required>
+                <input type="text" id="nume" name="nume" [(ngModel)]="newRestaurant.nume" [ngModelOptions]="{standalone: true}" required>
             </div>
 
             <div class="form-group">
                 <label for="adresa">Adresa</label>
-                <textarea style="width: 100%;" id="adresa" name="adresa" [(ngModel)]="newRestaurant.adresa" required></textarea>
+                <textarea style="width: 100%;" id="adresa" name="adresa" [(ngModel)]="newRestaurant.adresa" [ngModelOptions]="{standalone: true}" required></textarea>
             </div>
 
 
             <div class="form-group">
                 <label for="specific">Specific</label>
-                <input type="text" id="specific" name="specific" [(ngModel)]="newRestaurant.specific" required>
+                <input type="text" id="specific" name="specific" [(ngModel)]="newRestaurant.specific" [ngModelOptions]="{standalone: true}" required>
             </div>
             <button [disabled]="newRestaurant.nume==''||newRestaurant.nume==null||newRestaurant.adresa==''||newRestaurant.adresa==null" class="btn btn-success me-2" style="background-color: crimson;" type="submit">Adauga restaurant</button>
         </form>

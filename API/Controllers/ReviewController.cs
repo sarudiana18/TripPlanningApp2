@@ -77,8 +77,32 @@ namespace API.Controllers
                     return BadRequest("Hotelul cu id-ul "+reviewDto.HotelId.ToString()+ ", trimis in request, nu a fost gasit in baza de date");
                 }
 
-                hotel.Rating = Queryable.Average((IQueryable<decimal>)hotel.Reviews.Select(x=> x.Nota));
+                hotel.Rating = Queryable.Average((hotel.Reviews.Select(x=> x.Nota).ToList().AsQueryable()));
                 _uow.HotelRepository.UpdateHotel(hotel);
+          
+            }
+            //update nota restaurant
+            if(reviewDto.RestaurantId.HasValue && reviewDto.RestaurantId.Value > 0){
+
+                var restaurant = _uow.RestaurantRepository.GetRestaurant(reviewDto.RestaurantId.Value);
+                if(restaurant == null){
+                    return BadRequest("Restaurantul cu id-ul "+reviewDto.RestaurantId.ToString()+ ", trimis in request, nu a fost gasit in baza de date");
+                }
+
+                restaurant.Rating = Queryable.Average((restaurant.Reviews.Select(x=> x.Nota).ToList().AsQueryable()));
+                _uow.RestaurantRepository.UpdateRestaurant(restaurant);
+          
+            }
+            //update nota parc
+            if(reviewDto.ParcId.HasValue && reviewDto.ParcId.Value > 0){
+
+                var parc = _uow.ParcRepository.GetParc(reviewDto.ParcId.Value);
+                if(parc == null){
+                    return BadRequest("Parcul cu id-ul "+reviewDto.ParcId.ToString()+ ", trimis in request, nu a fost gasit in baza de date");
+                }
+
+                parc.Rating = Queryable.Average((parc.Reviews.Select(x=> x.Nota).ToList().AsQueryable()));
+                _uow.ParcRepository.UpdateParc(parc);
           
             }
             

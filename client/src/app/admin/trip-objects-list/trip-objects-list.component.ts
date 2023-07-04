@@ -339,6 +339,8 @@ export class TripObjectListComponent implements OnInit {
     this.confirmationService.confirm({
       message: 'Sunteti sigur ca doriti sa stergeti acest obiect?',
       icon: 'pi pi-exclamation-triangle',
+      acceptLabel:"Da",
+      rejectLabel:"Nu",
       accept: () => {
         if(objectId){
           this.tripPlanningService.removeObject(path, objectId).subscribe({

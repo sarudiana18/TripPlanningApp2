@@ -27,6 +27,8 @@
                 <p>{{hotel.rating}}</p>
                 <h4>Pret pe noapte camera dubla de la:</h4>
                 <p>{{hotel.pricePerNight}} RON </p>
+                <h4>Pret pe noapte camera tripla de la:</h4>
+                <p>{{hotel.pricePerNightCameraTripla}} RON </p>
                 <button (click)="redirectToBooking()">Rezervă acum pe Booking.com</button>
             </tab>
             <tab heading="Imagini" (selectTab)="onTabActivated($event)">

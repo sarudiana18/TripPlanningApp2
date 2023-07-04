@@ -53,16 +53,21 @@ namespace API.Data
             if(nrPersoane >0 && nrPersoane%2 ==0){
                 nrCamereDuble = nrPersoane/2;
             }
-            else if( nrPersoane >1){
-                nrCamereTriple = 1;
-                nrCamereDuble = (nrPersoane-3)/2; 
-                return _context.Hoteluri.Where(x=> x.CityId == cityId && 
-                (x.PricePerNight <= (!x.PricePerNightCameraTripla.HasValue || x.PricePerNightCameraTripla.Value==0? buget/nrNopti/nrCamereDuble+1:
-                (buget - x.PricePerNightCameraTripla)/nrNopti/nrCamereDuble)))
-                .Include(p=> p.Photos).Include(r=> r.Reviews).ThenInclude(y=> y.CreatedByUser).ToList();
-            }
             else if(nrPersoane == 1){
                 nrCamereDuble = 1;
+            }
+            else if( nrPersoane >= 3){
+                nrCamereTriple = 1;
+                nrCamereDuble = (nrPersoane-3)/2;
+                if(nrCamereDuble == 0 && nrCamereTriple == 1 && nrPersoane ==3){
+                    return _context.Hoteluri.Where(x=> x.CityId == cityId && 
+                    x.PricePerNightCameraTripla <= buget/nrNopti)
+                    .Include(p=> p.Photos).Include(r=> r.Reviews).ThenInclude(y=> y.CreatedByUser).ToList();
+                }
+                return _context.Hoteluri.Where(x=> x.CityId == cityId && 
+                (x.PricePerNight <= (!x.PricePerNightCameraTripla.HasValue || x.PricePerNightCameraTripla.Value==0? buget/nrNopti/(nrCamereDuble+2):
+                (buget - x.PricePerNightCameraTripla)/nrNopti/nrCamereDuble)))
+                .Include(p=> p.Photos).Include(r=> r.Reviews).ThenInclude(y=> y.CreatedByUser).ToList();
             }
 
             var hotels = new List<Hotel>();

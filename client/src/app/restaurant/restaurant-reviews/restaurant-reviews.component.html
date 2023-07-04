@@ -28,18 +28,18 @@
         <form *ngIf="displayForAddingNewReview" (ngSubmit)="submitReview()">
             <div class="form-group">
                 <label for="titlu">Titlu</label>
-                <input type="text" id="titlu" name="titlu" [(ngModel)]="newReview.titlu" required>
+                <input type="text" id="titlu" name="titlu" [(ngModel)]="newReview.titlu" [ngModelOptions]="{standalone: true}" required>
             </div>
     
             <div class="form-group">
                 <label for="descriere">Descriere</label>
-                <textarea id="descriere" name="descriere" [(ngModel)]="newReview.descriereReview"></textarea>
+                <textarea id="descriere" name="descriere" [(ngModel)]="newReview.descriereReview" [ngModelOptions]="{standalone: true}"></textarea>
             </div>
             
             
             <div class="form-group">
                 <label for="rating">Nota</label>
-                <p-rating name="rating" [(ngModel)]="newReview.nota" [stars]="10" required=""></p-rating>
+                <p-rating name="rating" [(ngModel)]="newReview.nota" [ngModelOptions]="{standalone: true}" [stars]="10" required=""></p-rating>
             </div>
     
             
