@@ -61,6 +61,8 @@ namespace API.Data
                 nrCamereDuble = (nrPersoane-3)/2;
                 if(nrCamereDuble == 0 && nrCamereTriple == 1 && nrPersoane ==3){
                     return _context.Hoteluri.Where(x=> x.CityId == cityId && 
+                    !x.PricePerNightCameraTripla.HasValue || x.PricePerNightCameraTripla.Value==0?
+                     x.PricePerNight <= buget/nrNopti/(nrCamereDuble+2):
                     x.PricePerNightCameraTripla <= buget/nrNopti)
                     .Include(p=> p.Photos).Include(r=> r.Reviews).ThenInclude(y=> y.CreatedByUser).ToList();
                 }

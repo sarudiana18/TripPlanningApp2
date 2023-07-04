@@ -92,8 +92,9 @@ export class TripObjectListComponent implements OnInit {
       if((this.cities == null || this.cities.length == 0) && this.tripParams.destinationCity?.id){
         this.loadCities();
       }
-      this.loadObjects();
     }
+    
+    this.loadObjects();
   }
   loadObjects(){
     if(this.tripParams.destinationCity?.id){
