@@ -78,10 +78,11 @@ export class TripObjectListComponent implements OnInit {
     }
 
   ngOnInit(): void {
-      this.loadObjects();
+      this.loadObjectsFromCache();
       this.loadCountries();
   }
-  loadObjects(){
+
+  loadObjectsFromCache(){
     const tripObjectDetailsParams = localStorage.getItem('tripObjectDetailsParams');
     if(tripObjectDetailsParams){
       this.tripParams = JSON.parse(tripObjectDetailsParams);
@@ -91,7 +92,10 @@ export class TripObjectListComponent implements OnInit {
       if((this.cities == null || this.cities.length == 0) && this.tripParams.destinationCity?.id){
         this.loadCities();
       }
+      this.loadObjects();
     }
+  }
+  loadObjects(){
     if(this.tripParams.destinationCity?.id){
       this.atractiiFilter.cityId = this.tripParams.destinationCity.id;
       this.hotelFilter.cityId = this.tripParams.destinationCity.id;
@@ -99,7 +103,6 @@ export class TripObjectListComponent implements OnInit {
       this.parcFilter.cityId = this.tripParams.destinationCity.id;
       localStorage.setItem('tripObjectDetailsParams', JSON.stringify(this.tripParams));
     }
-
     this.getAtractiiTuristiceFiltered();
     this.getHotels();
     this.getRestaurante();
@@ -326,6 +329,7 @@ export class TripObjectListComponent implements OnInit {
             this.tripParams.destinationCity = {} as City;
             this.tripParams.destinationCity.name = this.tripParams.destinationState.name;
             this.tripParams.destinationCity.id = this.tripParams.destinationState.id;
+            localStorage.setItem('tripObjectDetailsParams', JSON.stringify(this.tripParams));
             this.loadObjects();
           }
           else {
