@@ -120,7 +120,8 @@ export class TripDetailsComponent implements OnInit {
     // Add the new review to the reviews array
     this.tripPlanningService.addNewAtractieTuristica(this.newAtractie).subscribe({
       next: response => {
-        this.atractiiTuristice.push(response);
+        //this.atractiiTuristice.push(response);
+        this.getAtractiiTuristiceFiltered();
         this.displayForAddingNewAttraction = false;
         this.newAtractie = {
           cityId: 0,
@@ -144,7 +145,8 @@ export class TripDetailsComponent implements OnInit {
 
     this.tripPlanningService.addNewHotel(this.newHotel).subscribe({
       next: response => {
-        this.hoteluri.push(response);
+        //this.hoteluri.push(response);
+        this.getHotels();
         this.displayForAddingNewHotel=false;
         // Clear the form fields
         this.newHotel = {
@@ -171,7 +173,8 @@ export class TripDetailsComponent implements OnInit {
     // Add the new review to the reviews array
     this.tripPlanningService.addNewParc(this.newParc).subscribe({
       next: response => {
-        this.parcuri.push(response);
+        //this.parcuri.push(response);
+        this.getParcuri();
         this.displayForAddingNewParc = false;
         this.newParc = {
           cityId: 0,
@@ -194,7 +197,8 @@ export class TripDetailsComponent implements OnInit {
     // Add the new review to the reviews array
     this.tripPlanningService.addNewRestaurant(this.newRestaurant).subscribe({
       next: response => {
-        this.restaurante.push(response);
+        //this.restaurante.push(response);
+        this.getRestaurante();
         this.displayForAddingNewRestaurant = false;
         this.newRestaurant = {
           cityId: 0,

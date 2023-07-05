@@ -39,7 +39,7 @@ export class RegisterComponent implements OnInit {
       city: ['', Validators.required],
       country: ['', Validators.required],
       password: ['', [Validators.required, 
-        Validators.minLength(8), Validators.maxLength(16), Validators.pattern(/[A-Z]/)]],
+        Validators.minLength(8), Validators.maxLength(16), Validators.pattern(/[A-Z]/), Validators.pattern(/[1-9]/)]],
       confirmPassword: ['', [Validators.required, this.matchValues('password')]],
     });
     this.registerForm.controls['password'].valueChanges.subscribe({
@@ -61,7 +61,8 @@ export class RegisterComponent implements OnInit {
         this.router.navigateByUrl('/planYourTrip')
       },
       error: error => {
-        this.validationErrors = error
+        var error1 = error.error[0].description;
+        this.validationErrors?.push(error1);
       } 
     })
   }
